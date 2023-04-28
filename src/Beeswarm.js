@@ -28,6 +28,9 @@ export default class Beeswarm extends VisualizationAbstract {
     this.settings.opacity = settings.opacity ?? 1;
     this.settings.highlightColor = settings.highlightColor ?? "red";
     this.settings.forceSteps = settings.forceSteps ?? 300;
+    this.settings.forceX = settings.forceX ?? 1;
+    this.settings.forceY = settings.forceY ?? 5;
+    this.settings.forceCollider = settings.forceCollider ?? 1;
   }
 
   prepareData() {
@@ -171,16 +174,16 @@ export default class Beeswarm extends VisualizationAbstract {
     const xAxis = d3.axisBottom(x);
     const yAxis = d3.axisLeft(y);
 
-    this.forenground
+    this.axisX
       .append("g")
       .attr("class", "x-axis")
-      .attr("transform", "translate(0," + this.height + ")")
+      .attr("transform", `translate(${this.margin.left},${this.height})`)
       .call(xAxis);
 
-    this.forenground
+    this.axisY
       .append("g")
       .attr("class", "y-axis")
-      .attr("transform", `translate(${0},${0})`)
+      .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
       .call(yAxis);
   }
 
@@ -240,8 +243,7 @@ export default class Beeswarm extends VisualizationAbstract {
    */
   drawContainer() {
     this.forenground = d3
-      .select(`#${this.element}`)
-      .append("svg")
+      .select("svg")
       .attr("width", this.width + this.margin.left + this.margin.right)
       .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")

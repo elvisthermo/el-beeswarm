@@ -1,0 +1,59 @@
+/* Estilo padrão */
+:root {
+  --bg-color: #ffffff;
+  --font-family: Arial, sans-serif;
+  --font-color: #333333;
+  --axis-color: #666666;
+  --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --card-bg-color: #f0f0f0;
+  --card-border-color: #e0e0e0;
+}
+
+/* Estilo dark mode */
+[data-theme="dark"] {
+  --bg-color: #222222;
+  --font-color: #cccccc;
+  --axis-color: #999999;
+  --card-bg-color: #2e2e2e;
+  --card-border-color: #3e3e3e;
+  --item-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
+}
+
+/* Estilo light mode */
+[data-theme="light"] {
+  --bg-color: #ffffff;
+  --font-color: #333333;
+  --axis-color: #666666;
+  --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --card-bg-color: #f0f0f0;
+  --card-border-color: #e0e0e0;
+}
+
+/* Estilos do gráfico */
+.beeswarmplot {
+  background-color: var(--bg-color);
+  font-family: var(--font-family);
+  color: var(--font-color);
+}
+
+.beeswarmplot .axis {
+  stroke: var(--axis-color);
+}
+
+.beeswarmplot .item {
+  box-shadow: var(--item-shadow);
+}
+
+.beeswarmplot .axis:hover {
+  stroke: var(--font-color);
+  cursor: pointer;
+}
+
+.beeswarmplot-card {
+  background-color: var(--card-bg-color);
+  border: 1px solid var(--card-border-color);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
