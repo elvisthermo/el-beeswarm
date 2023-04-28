@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" style="width: 100%; height: 100%">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script src="../dist/bundle.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+
+  <body>
+    <style>
+      .tooltip {
+        position: absolute;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 5px;
+        padding: 5px;
+        font-size: 12px;
+      }
+    </style>
+
+    <script>
+      function loadDataSet() {
+        // https://raw.githubusercontent.com/elvisthermo/data-bioinsumos/main/data/BioinsumosProdutosBiologicos.json
+        const dataset = d3.csv("./dataset/carros_teste3.csv", function (data) {
+          return data;
+        });
+
+        return dataset;
+      }
+
+      window.onload = function () {
+        async function main() {
+          dataset = await loadDataSet();
+
+          const attr = [
+            "NRCILINDROS",
+            "POTENCIA",
+            "TIPO",
+            "COMBUSTIVEL",
+            "RPM",
+          ];
+
+          // htmlElementId,data, xType, yType, xLabel, yLabel, radius, width, height
+          beeswarm = new casvis.Beeswarm(
+            "canvas1",
+            dataset,
+            attr[2],
+            attr[4],
+            10,
+            800,
+            600,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              highlightColor: "#FF1122", //"#08E700",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 800,
+              height: 600,
+              paddingTop: 25,
+              paddingLeft: 50,
+              paddingRight: 50,
+              paddingBottom: 30,
+              autoresize: true,
+              colorAttr: attr[2],
+              colors: ["pink", "yellow", "steelblue","red","green"],
+            })
+          );
+          beeswarm.setTooltipLabels(
+            [attr[2],
+            attr[4]]);
+          beeswarm.draw();
+          console.log(beeswarm);
+        }
+
+        main();
+      };
+    </script>
+    <div id="canvas1"></div>
+    <div id="canvas2"></div>
+    <div id="canvas3"></div>
+  </body>
+</html>
