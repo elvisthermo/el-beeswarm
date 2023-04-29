@@ -1,4 +1,6 @@
 import VisualizationAbstract from './src/VisualizationAbstract.js'
-import Beeswarm from './src/Beeswarm.js';
+import BeeswarmPlot from './src/BeeswarmPlot.js';
+import BeeswarmGroup from './src/BeeswarmGroup.js';
+import BeeswarmDimensions from './src/BeeswarmDimensions.js';
 
-export { VisualizationAbstract, Beeswarm}
+export { VisualizationAbstract, BeeswarmPlot, BeeswarmGroup, BeeswarmDimensions}

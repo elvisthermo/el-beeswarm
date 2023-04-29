@@ -1,34 +1,70 @@
+
 /* Estilo padrão */
-:root {
+/* :root {
   --bg-color: #ffffff;
-  --font-family: Arial, sans-serif;
+  --font-family: 'Roboto', sans-serif;
   --font-color: #333333;
   --axis-color: #666666;
   --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --card-bg-color: #f0f0f0;
+  --card-bg-color: #fcfcfc;
   --card-border-color: #e0e0e0;
-}
+} */
 
 /* Estilo dark mode */
-[data-theme="dark"] {
+/* [data-theme="dark"] {
   --bg-color: #222222;
   --font-color: #cccccc;
   --axis-color: #999999;
   --card-bg-color: #2e2e2e;
   --card-border-color: #3e3e3e;
   --item-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
-}
+} */
 
 /* Estilo light mode */
-[data-theme="light"] {
+/* [data-theme="light"] {
   --bg-color: #ffffff;
   --font-color: #333333;
   --axis-color: #666666;
   --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   --card-bg-color: #f0f0f0;
   --card-border-color: #e0e0e0;
+} */
+
+.light-theme {
+  --bg-color: #fefefe;
+  --font-color: #0b0b0b;
+  --axis-color: #666666;
+  --color:#0b0b0b;
+  --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --card-bg-color: #fefefe;
+  --card-border-color: #e0e0e0;
 }
 
+.dark-theme {
+  --bg-color: #222222;
+  --font-color: #cccccc;
+  --axis-color: #999999;
+  --card-bg-color: #1c1721;
+  --card-border-color: #3e3e3e;
+  --item-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
+}
+
+.layer-axisX{
+  color: var(--font-color);
+}
+
+.layer-axisY{
+  color:var(--font-color);
+}
+
+.view-container {
+  background-color: var(--card-bg-color);
+  border: 1px solid var(--card-border-color);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
 /* Estilos do gráfico */
 .beeswarmplot {
   background-color: var(--bg-color);
