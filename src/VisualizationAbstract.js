@@ -5,7 +5,7 @@ export default class VisualizationAbstract {
      *
      * @param {htmlElementId} htmlElementId - id do Elemnto html em objeto
      */
-    constructor(htmlElementId, width, height) {
+    constructor(htmlElementId, width, height,settings) {
         this.parentElement = document.getElementById(htmlElementId);
         this.htmlBounds = this.parentElement.getBoundingClientRect();
         this.data;
@@ -23,6 +23,8 @@ export default class VisualizationAbstract {
             paddingBottom: 30,
             autoresize: true,
             colorAttr : "",
+            interpolate:settings.interpolate??d3.interpolateBlues,
+            theme: settings.theme, //light or dark
             colors : ["#FF1122"]
         };
 
@@ -44,6 +46,7 @@ export default class VisualizationAbstract {
 
         this.svg = d3.select(this.parentElement)
             .append("svg")
+            .attr("class",`${this.settings.theme}-theme view-container`)
             .attr("width", this.config.width)
             .attr("height", this.config.height);
 
