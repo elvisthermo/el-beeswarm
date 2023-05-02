@@ -25,7 +25,7 @@
 
     <script>
       function loadDataSet() {
-        const dataset = d3.csv("./dataset/iris.csv", function (data) {
+        const dataset = d3.csv("./dataset/carros_teste3.csv", function (data) {
           return data;
         });
 
@@ -37,7 +37,7 @@
           dataset = await loadDataSet();
 
           const attr = [
-          "sepal_length","sepal_width","petal_length","petal_width","variety"
+          "MARCA","COMBUSTIVEL","TURBO","NRPORTAS","TIPO","TRACAO","POSMOTOR","PESO","NRCILINDROS","POTENCIA","RPM","VALOR","ANO","ORIGEM"
           ];
           console.log('interpolate color',d3.interpolateMagma)
 
@@ -46,7 +46,7 @@
             "canvas1",
             dataset,
             attr[4],
-            attr[1],
+            attr[7],
             5,
             800,
             400,
@@ -65,7 +65,7 @@
               autoresize: true,
               colorAttr: attr[4],
               theme: "dark",
-              interpolate: d3.interpolateGreens
+              showLegend : false
             })
           );
           beeswarm.setTooltipLabels(
@@ -79,6 +79,7 @@
       };
     </script>
     <div id="canvas1"></div>
+    <div id="legend"></div>
     <div id="canvas2"></div>
     <div id="canvas3"></div>
   </body>
