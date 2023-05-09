@@ -7,7 +7,7 @@
         "start": "webpack-dev-server --config webpack.config.dev.js --mode development",
         "build": "webpack --config webpack.config.prod.js --mode production",
         "prepare": "run-s build copy-files",
-        "copy-files": "cp README.md dist && cp LICENSE dist"
+        "copy-files": "copy README.md dist && copy LICENSE dist"
     },
     "author": "",
     "license": "ISC",
