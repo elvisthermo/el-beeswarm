@@ -1,29 +1,20 @@
-import VisualizationAbstract from "./VisualizationAbstract";
+import VisualizationAbstract from "./VisualizationAbstract.js";
 
-export default class BeeswarmGroup extends VisualizationAbstract {
+export default class BeeswarmPlot extends VisualizationAbstract {
   attrTooltip = [];
-  constructor(
-    htmlElementId,
-    data,
-    xLabel,
-    yLabel,
-    radius,
-    width,
-    height,
-    settings
-  ) {
-    super(htmlElementId, width, height);
-    this.margin = { top: 30, right: 10, bottom: 60, left: 60 };
+  constructor(htmlElementId, data, attr, radius, width, height, settings) {
+    super(htmlElementId, width, height,settings);
+    this.margin = { top: 10, right: 10, bottom: 10, left: 30 };
     this.element = htmlElementId;
     this.data = data;
-    this.xLabel = xLabel;
-    this.yLabel = yLabel;
+    this.attr = attr;
     this.radius = radius || 5;
     this.width = width;
     this.height = height;
-    this.settings.dotsType = settings.dotsType ?settings.dotsType: "circle";// circle/ hex
+    this.orientation = settings.orientation; //`x` 'y'
+    this.settings.dotsType = settings.dotsType ? settings.dotsType : "circle"; // circle/ hex
     this.settings.colorAttr = settings.colorAttr ?? "";
-    this.settings.colors = settings.colors ?? "";
+    this.settings.colors = settings.colors ??undefined;
     this.settings.autoresize = settings.autoresize ?? true;
     this.settings.opacity = settings.opacity ?? 1;
     this.settings.highlightColor = settings.highlightColor ?? "red";
@@ -41,44 +32,51 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     super.draw();
     var x, y;
 
-    if (typeof this.data[0][this.xLabel] === "string") {
-      x = d3
-        .scaleBand()
-        .range([0 + this.margin.left, this.width - this.margin.right])
-        .padding(1);
-      x.domain(this.data.map((d) => d[this.xLabel]));
-    } else if (typeof this.data[0][this.xLabel] === "number") {
-      x = d3
+    if (this.orientation === "x") {
+      if (typeof this.data[0][this.attr] === "string" && isNaN(this.data[0][this.attr])) {
+        x = d3
+          .scaleBand()
+          .range([0 + this.margin.left, this.width - this.margin.right])
+          .padding(1);
+        x.domain(this.data.map((d) => d[this.attr]));
+      } else if (typeof +this.data[0][this.attr] === "number" && !isNaN(this.data[0][this.attr])) {
+        console.log('caiu no numbet y');
+        // .range([0 + this.margin.left, this.width - this.margin.right]);
+        // x.domain(d3.extent(this.data, (d) => d[this.xLabel]))
+        x = d3
         .scaleLinear()
         .range([0 + this.margin.left, this.width - this.margin.right]);
-      x.domain(d3.extent(this.data, (d) => d[this.xLabel]));
-    } else if (this.data[0][this.xLabel] instanceof Date) {
-      x = d3
-        .scaleTime()
-        .range([0 + this.margin.left, this.width - this.margin.right]);
-      x.domain(d3.extent(this.data, (d) => moment(d[this.xLabel]).toDate()));
+      x.domain(d3.extent(this.data, (d) => d[this.attr]));
+        } else if (this.data[0][this.xLabel] instanceof Date) {
+        x = d3
+          .scaleTime()
+          .range([0 + this.margin.left, this.width - this.margin.right]);
+        x.domain(d3.extent(this.data, (d) => moment(d[this.attr]).toDate()));
+      }
     }
 
-    // Definir a escala do eixo Y
-    if (typeof this.data[0][this.yLabel] === "string") {
-      y = d3
-        .scaleBand()
-        .range([this.height - this.margin.bottom, 0 + this.margin.top])
-        .padding(1);
-      y.domain(this.data.map((d) => d[this.yLabel]));
-    } else if (typeof this.data[0][this.yLabel] === "number") {
-      y = d3
-        .scaleLinear()
-        .range([this.height - this.margin.bottom, 0 + this.margin.top]);
-      y.domain(d3.extent(this.data, (d) => d[this.yLabel]));
-    } else if (this.data[0][this.xLabel] instanceof Date) {
-      y = d3
-        .scaleTime()
-        .range([this.height - this.margin.bottom, 0 + this.margin.top]);
-      y.domain(d3.extent(this.data, (d) => moment(d[this.yLabel]).toDate()));
+    if (this.orientation === "y") {
+      // Definir a escala do eixo Y
+      if (typeof this.data[0][this.attr] === "string" && isNaN(this.data[0][this.attr])) {
+        y = d3
+          .scaleBand()
+          .range([this.height - this.margin.bottom, 0 + this.margin.top])
+          .padding(1);
+        y.domain(this.data.map((d) => d[this.attr]));
+      } else if (typeof +this.data[0][this.attr] === "number" && !isNaN(this.data[0][this.attr])) {
+        y = d3
+          .scaleLinear()
+          .range([this.height - this.margin.bottom, 0 + this.margin.top]);
+        y.domain(d3.extent(this.data, (d) => d[this.attr]));
+      } else if (this.data[0][this.attr] instanceof Date) {
+        y = d3
+          .scaleTime()
+          .range([this.height - this.margin.bottom, 0 + this.margin.top]);
+        y.domain(d3.extent(this.data, (d) => moment(d[this.attr]).toDate()));
+      }
     }
 
-    this.drawContainer();
+    // this.drawContainer();
     this.drawDots(x, y);
     this.drawAxis(x, y);
   }
@@ -95,14 +93,15 @@ export default class BeeswarmGroup extends VisualizationAbstract {
 
     // Criar a simulação de força
     const colorScheme = this.settings.colors ?? undefined;
-    const colors = this.setColor(this.xLabel, colorScheme);
-    // Adicionar os círculos
+    const colors = this.setColor(this.settings.colorAttr, colorScheme, this.settings.interpolate);
+
+    const scale = x?x:y;
 
     const positionedData = this.calculateSwarmPlotPositions(
       this.data,
-      x,
-      y,
-      this.radius
+      this.radius,
+      0.1,
+      scale
     );
 
     const hexagon = (radius) => {
@@ -131,7 +130,13 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     // .attr("cx", (d) => d.x)
     // .attr("cy", (d) => d.y)
 
-    const dotGroup = this.forenground.append("g").attr("class", "dots");
+    const attrOrientation = this.orientation==='x'?['x','y']:['y','x'];
+    const attrTranslate = this.orientation==='x'?[0,this.height/2]:[this.width/2,0];
+
+    console.log(positionedData);
+    const dotGroup = this.forenground.append("g")
+    .attr("transform", `translate(${attrTranslate[0]}, ${attrTranslate[1]})`)
+    .attr("class", "dots");
     dotGroup
       .selectAll(".dot")
       .data(positionedData)
@@ -139,9 +144,17 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .append("path")
       .attr("class", "dot")
       .attr("d", hexagon(this.radius))
-      .attr("transform", (d) => `translate(${d.x},${d.y})`)
+      .attr("transform", (d) => `translate(${d[attrOrientation[0]]},${d[attrOrientation[1]]})`)
       .attr("cursor", "pointer")
-      .attr("fill", (d) => colors(d[this.settings.colorAttr]))
+      // .append("circle")
+      // .attr("class", "dot")
+      // .attr("cx", d => d[attrOrientation[0]])
+      // .attr("cy", d => d[attrOrientation[1]])
+      // .attr("r", this.radius)
+      // .attr("cursor", "pointer")
+      .attr("fill", (d) => {
+        console.log(`d[this.settings.colorAttr]`,d[this.settings.colorAttr]);
+        return colors(d[this.settings.colorAttr])})
       .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
       .on("mouseover", function (event, d) {
         d3.select(this).attr("opacity", 0.8);
@@ -174,17 +187,21 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     const xAxis = d3.axisBottom(x);
     const yAxis = d3.axisLeft(y);
 
-    this.axisX
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(${this.margin.left},${this.height})`)
-      .call(xAxis);
+    if (this.orientation === "x") {
+      this.axisX
+        .append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(${0},${this.height- (this.margin.bottom + this.margin.top)})`)
+        .call(xAxis);
+    }
 
-    this.axisY
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
-      .call(yAxis);
+    if (this.orientation === "y") {
+      this.axisY
+        .append("g")
+        .attr("class", "y-axis")
+        .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
+        .call(yAxis);
+    }
   }
 
   drawAxislegend() {
@@ -206,52 +223,19 @@ export default class BeeswarmGroup extends VisualizationAbstract {
   }
 
   /**
-   * @param {*} attribute
-   * @param {*} colors
-   */
-  setColor(colorColumn, colors) {
-    let colorScale;
-    let schemeColor = colors ?? d3.schemeCategory10;
-
-    // Verifica se a coluna de cores é numérica ou categórica
-    const isNumeric = typeof this.data[0][colorColumn] === "number";
-    const isCategorical = typeof this.data[0][colorColumn] === "string";
-
-    // Cria a escala de cores apropriada com base no tipo da coluna de cores
-    if (isNumeric) {
-      colorScale = d3
-        .scaleSequential()
-        .domain(d3.extent(this.data, (d) => d[colorColumn]))
-        .interpolator(d3.interpolateViridis);
-    } else if (isCategorical) {
-      const categories = Array.from(
-        new Set(this.data.map((d) => d[colorColumn]))
-      );
-
-      colorScale = d3.scaleOrdinal().domain(categories).range(schemeColor);
-    } else {
-      // Se a coluna de cores não for numérica nem categórica, retorna null
-      console.warn("Invalid color column");
-      colorScale = null;
-    }
-
-    return colorScale;
-  }
-
-  /**
    * @description - draw container initially in svg
    */
-  drawContainer() {
-    this.forenground = d3
-      .select("svg")
-      .attr("width", this.width + this.margin.left + this.margin.right)
-      .attr("height", this.height + this.margin.top + this.margin.bottom)
-      .append("g")
-      .attr(
-        "transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")"
-      );
-  }
+  // drawContainer() {
+  //   this.forenground
+  //     .select(".layer-forenground")
+  //     .attr("width", this.width + this.margin.left + this.margin.right)
+  //     .attr("height", this.height + this.margin.top + this.margin.bottom)
+  //     .append("g")
+  //     .attr(
+  //       "transform",
+  //       "translate(" + this.margin.left + "," + this.margin.top + ")"
+  //     );
+  // }
 
   setTooltipLabels(titles) {
     this.attrTooltip = titles;
@@ -281,33 +265,50 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     };
   }
 
-  calculateSwarmPlotPositions(data, xScale, yScale, radius) {
-    const positionedData = data.map((d) => ({ ...d }));
-    const sortedData = positionedData.sort(
-      (a, b) => xScale(a[this.xLabel]) - xScale(b[this.xLabel])
-    );
-
-    const simulation = d3
-      .forceSimulation(sortedData)
-      .force("x", d3.forceX((d) => xScale(d[this.xLabel])).strength(1))
-      .force("y", d3.forceY((d) => yScale(d[this.yLabel])).strength(5))
-      .force("collide", d3.forceCollide(this.radius + 1).strength(1))
-      .force("containX", this.containForce(this.width - this.margin.right, "x"))
-      .force(
-        "containY",
-        this.containForce(
-          this.height - (this.margin.top + this.margin.bottom),
-          "y"
-        )
-      )
-      .stop();
-
-    // Executar a simulação de força pelos passos definidos
-    for (let i = 0; i < this.settings.forceSteps; i++) {
-      simulation.tick();
+  calculateSwarmPlotPositions(data, radius, padding, scale) {
+    data.map((d) => ({ ...d }));
+    const circles = data.map(d => ( {x: scale(d[this.attr]), ...d})).sort((a, b) => a.x - b.x);
+    const epsilon = 0.001;
+    let head = null, tail = null;
+      
+    // Returns true if circle ⟨x,y⟩ intersects with any circle in the queue.
+    function intersects(x, y) {
+      let a = head;
+      while (a) {
+        if ((radius * 2 + padding - epsilon) ** 2 > (a.x - x) ** 2 + (a.y - y) ** 2) {
+          return true;
+        }
+        a = a.next;
+      }
+      return false;
     }
-
-    return sortedData;
+    
+    // Place each circle sequentially.
+    for (const b of circles) {
+      
+      // Remove circles from the queue that can’t intersect the new circle b.
+      while (head && head.x < b.x - (radius * 2 + padding)) head = head.next;
+      
+      // Choose the minimum non-intersecting tangent.
+      if (intersects(b.x, b.y = 0)) {
+        let a = head;
+        b.y = Infinity;
+        do {
+          let y1 = a.y + Math.sqrt((radius * 2 + padding) ** 2 - (a.x - b.x) ** 2);
+          let y2 = a.y - Math.sqrt((radius * 2 + padding) ** 2 - (a.x - b.x) ** 2);
+          if (Math.abs(y1) < Math.abs(b.y) && !intersects(b.x, y1)) b.y = y1;
+          if (Math.abs(y2) < Math.abs(b.y) && !intersects(b.x, y2)) b.y = y2;
+          a = a.next;
+        } while (a);
+      }
+      
+      // Add b to the queue.
+      b.next = null;
+      if (head === null) head = tail = b;
+      else tail = tail.next = b;
+    }
+    
+    return circles;
   }
 
   showTooltip() {}

@@ -1,4 +1,4 @@
-import VisualizationAbstract from "./VisualizationAbstract";
+import VisualizationAbstract from "./VisualizationAbstract.js";
 
 export default class BeeswarmDimensions extends VisualizationAbstract {
   attrTooltip = [];
@@ -95,7 +95,7 @@ export default class BeeswarmDimensions extends VisualizationAbstract {
 
     // Criar a simulação de força
     const colorScheme = this.settings.colors ?? undefined;
-    const colors = this.setColor(this.xLabel, colorScheme);
+    const colors = this.setColor(this.attr, colorScheme);
     // Adicionar os círculos
 
     const positionedData = this.calculateSwarmPlotPositions(

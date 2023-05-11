@@ -1,4 +1,4 @@
-import VisualizationAbstract from "./VisualizationAbstract";
+import VisualizationAbstract from "./VisualizationAbstract.js";
 
 export default class BeeswarmGroup extends VisualizationAbstract {
   attrTooltip = [];
@@ -13,7 +13,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     settings
   ) {
     super(htmlElementId, width, height,settings);
-    this.margin = { top: 30, right: 10, bottom: 60, left: 60 };
+    this.margin = settings.margin;
     this.element = htmlElementId;
     this.data = data;
     this.xLabel = xLabel;
@@ -35,7 +35,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
   }
 
   prepareData() {
-    // super.data(dataset);
   }
 
   draw() {
@@ -60,7 +59,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       x.domain(d3.extent(this.data, (d) => moment(d[this.xLabel]).toDate()));
     }
 
-    // Definir a escala do eixo Y
     if (typeof this.data[0][this.yLabel] === "string" && isNaN(this.data[0][this.yLabel])) {
       y = d3
         .scaleBand()
@@ -81,7 +79,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       y.domain(d3.extent(this.data, (d) => moment(d[this.yLabel]).toDate()));
     }
 
-    this.drawContainer();
     this.drawDots(x, y);
     this.drawAxis(x, y);
   }
@@ -96,10 +93,8 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-    // Criar a simulação de força
     const colorScheme = this.settings.colors ?? undefined;
     const colors = this.setColor(this.settings.colorAttr, colorScheme, this.settings.interpolate);
-    // Adicionar os círculos
 
     const positionedData = this.calculateSwarmPlotPositions(
       this.data,
@@ -134,7 +129,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     // .attr("cx", (d) => d.x)
     // .attr("cy", (d) => d.y)
 
-    console.log('this.settings.colorAttr',this.settings.colorAttr);
     const dotGroup = this.forenground.append("g").attr("class", "dots");
     dotGroup
       .selectAll(".dot")
@@ -149,11 +143,11 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
       .on("mouseover", function (event, d) {
         d3.select(this).attr("opacity", 0.8);
-        // tooltip.transition().style("opacity", 1);
-        // tooltip
-        //   .html(this.getAttribute("title"))
-        //   .style("left", event.pageX + "px")
-        //   .style("top", event.pageY - 28 + "px");
+        tooltip.transition().style("opacity", 1);
+        tooltip
+          .html(this.getAttribute("title"))
+          .style("left", event.pageX + "px")
+          .style("top", event.pageY - 28 + "px");
       })
       .on("mouseout", function (d) {
         d3.select(this).attr("opacity", 1);
@@ -181,18 +175,17 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     this.axisX
       .append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(${this.margin.left},${this.height})`)
+      .attr("transform", `translate(${0},${this.height - this.margin.top})`)
       .call(xAxis);
 
     this.axisY
       .append("g")
       .attr("class", "y-axis")
-      .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
+      .attr("transform", `translate(${this.margin.left-20},${0})`)
       .call(yAxis);
   }
 
   drawAxislegend(x,y) {
-    // Adicionar títulos para os eixos
     const xAxis = d3.axisBottom(x);
     const yAxis = d3.axisLeft(y);
 
@@ -207,60 +200,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .attr("class", "y-axis")
       .attr("transform", `translate(${0},${0}))`)
       .call(yAxis);
-  }
-
-  /**
-   * @param {*} attribute
-   * @param {*} colors
-   */
-  setColor(colorColumn, colors, sequentialInterpolator) {
-    let colorScale;
-    let schemeColor = colors ?? d3.schemeCategory10;
-    const isNumber = isNaN(this.data[0][colorColumn]);
-    // Verifica se a coluna de cores é numérica ou categórica
-    const isNumeric = typeof +this.data[0][colorColumn] === "number";
-    const isCategorical = typeof this.data[0][colorColumn] === "string";
-    // Cria a escala de cores apropriada com base no tipo da coluna de cores
-    if (isNumeric && !isNumber) {
-      const interpolator = this.settings.colors ?
-      this.createCustomInterpolator(): sequentialInterpolator;
-      colorScale = d3
-        .scaleSequential()
-        .domain(d3.extent(this.data, (d) => d[colorColumn]))
-        .interpolator(interpolator);
-    } else if (isCategorical && isNumber) {
-      console.log('é categorico');
-      const categories = Array.from(
-        new Set(this.data.map((d) => d[colorColumn]))
-      );
-
-      colorScale = d3.scaleOrdinal().domain(categories).range(schemeColor);
-    } else {
-      // Se a coluna de cores não for numérica nem categórica, retorna null
-      console.warn("Invalid color column");
-      colorScale = null;
-    }
-
-    return colorScale;
-  }
-
-  setColors(colors){
-
-  }
-
-  /**
-   * @description - draw container initially in svg
-   */
-  drawContainer() {
-    this.forenground = d3
-      .select("svg")
-      .attr("width", this.width + this.margin.left + this.margin.right)
-      .attr("height", this.height + this.margin.top + this.margin.bottom)
-      .append("g")
-      .attr(
-        "transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")"
-      );
   }
 
   setTooltipLabels(titles) {
@@ -291,10 +230,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     };
   }
 
-  createCustomInterpolator() {
-    return d3.interpolateRgbBasis(this.settings.colors);
-  }
-
   calculateSwarmPlotPositions(data, xScale, yScale, radius) {
     const positionedData = data.map((d) => ({ ...d }));
     const sortedData = positionedData.sort(
@@ -303,8 +238,8 @@ export default class BeeswarmGroup extends VisualizationAbstract {
 
     const simulation = d3
       .forceSimulation(sortedData)
-      .force("x", d3.forceX((d) => xScale(d[this.xLabel])).strength(1))
-      .force("y", d3.forceY((d) => yScale(d[this.yLabel])).strength(5))
+      .force("x", d3.forceX((d) => xScale(d[this.xLabel])).strength(this.settings.forceX))
+      .force("y", d3.forceY((d) => yScale(d[this.yLabel])).strength(this.settings.forceY))
       .force("collide", d3.forceCollide(this.radius + 1).strength(1))
       .force("containX", this.containForce(this.width - this.margin.right, "x"))
       .force(
@@ -316,7 +251,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       )
       .stop();
 
-    // Executar a simulação de força pelos passos definidos
     for (let i = 0; i < this.settings.forceSteps; i++) {
       simulation.tick();
     }
