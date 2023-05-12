@@ -79,6 +79,7 @@ export default class BeeswarmPlot extends VisualizationAbstract {
     // this.drawContainer();
     this.drawDots(x, y);
     this.drawAxis(x, y);
+    return this.dotGroup; 
   }
 
   resize() {}

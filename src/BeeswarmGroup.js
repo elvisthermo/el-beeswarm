@@ -2,6 +2,7 @@ import VisualizationAbstract from "./VisualizationAbstract.js";
 
 export default class BeeswarmGroup extends VisualizationAbstract {
   attrTooltip = [];
+  dotGroup;
   constructor(
     htmlElementId,
     data,
@@ -102,7 +103,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     const self = this;
 
     let selected = [];
-    const tooltip = d3
+    this.tooltip = d3
       .select("body")
       .append("div")
       .attr("class", "tooltip")
@@ -152,10 +153,9 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     // .attr("cx", (d) => d.x)
     // .attr("cy", (d) => d.y)
 
-    console.log("this.settings.colorAttr", this.settings.colorAttr);
-    const dotGroup = this.forenground.append("g").attr("class", "dots");
+    this.dotGroup = this.forenground.append("g").attr("class", "dots");
 
-    dotGroup
+    this.dotGroup
       .selectAll(".dot")
       .data(positionedData)
       .enter()
@@ -165,48 +165,34 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .attr("transform", (d) => `translate(${d.x},${d.y})`)
       .attr("cursor", "pointer")
       .attr("fill", (d) => colors(d[this.settings.colorAttr]))
-      // .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
-      .on("mouseover", function (event, d) {
-        tooltip.transition().style("opacity", 0.8);
+      .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip));
+    // .on("mouseover", function (event, d) {
 
-        // let tooltipHtml = "";
-        // self.attrTooltip.map((key) => {
-        //   if (d.hasOwnProperty(key)) {
-        //     tooltipHtml += `<div><strong>${key}:</strong> ${d[key]}</div>`;
-        //   }
-        // });
+    // })
+    // .on("mouseleave", function () {
+    //   // evento mouseleave adicionado
+    //   // console.log('saiu');
+    //   // d3.select(this).attr("opacity", 1);
+    //   // tooltip.transition().style("opacity", 0)
+    //   // .transition()
+    //   //       .style("opacity", 0)
+    //   //       .style("display", "none")
+    // })
+    // .on("click", function (d) {
+    //   const circle = d3.select(this);
+    //   const isSelected = circle.classed("selected");
+    //   if (isSelected) {
+    //     selected.splice(selected.indexOf(circle), 1);
+    //     circle.classed("selected", false);
+    //     circle.attr("stroke", "none").attr("opacity", 1);
+    //   } else {
+    //     selected.push(circle);
+    //     circle.classed("selected", true);
+    //     circle.attr("stroke", "red").attr("opacity", 1);
+    //   }
+    // });
 
-        // tooltip
-        //   .html(tooltipHtml)
-        //   .style("left", event.pageX + "px")
-        //   .style("top", event.pageY - 28 + "px")
-        //   .style("display", "block");
-        // d3.select(this)
-          // .transition()
-          // .style("display", "none")     
-      })
-      .on("mouseleave", function () {
-        // evento mouseleave adicionado
-        // console.log('saiu');
-        // d3.select(this).attr("opacity", 1);
-        // tooltip.transition().style("opacity", 0)
-        // .transition()
-        //       .style("opacity", 0)
-        //       .style("display", "none")
-      })
-      .on("click", function (d) {
-        const circle = d3.select(this);
-        const isSelected = circle.classed("selected");
-        if (isSelected) {
-          selected.splice(selected.indexOf(circle), 1);
-          circle.classed("selected", false);
-          circle.attr("stroke", "none").attr("opacity", 1);
-        } else {
-          selected.push(circle);
-          circle.classed("selected", true);
-          circle.attr("stroke", "red").attr("opacity", 1);
-        }
-      });
+    return this.dotGroup;
   }
 
   drawAxis(x, y) {
@@ -249,15 +235,15 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     this.attrTooltip = titles;
   }
 
-  // generateTooltipHtml(d, titles) {
-  //   let html = "";
-  //   for (const [key, value] of Object.entries(d)) {
-  //     if (titles.includes(key)) {
-  //       html += `<div><strong>${key}:</strong> ${value}</div>`;
-  //     }
-  //   }
-  //   return html;
-  // }
+  generateTooltipHtml(d, titles) {
+    let html = "";
+    for (const [key, value] of Object.entries(d)) {
+      if (titles.includes(key)) {
+        html += `<div><strong>${key}:</strong> ${value}</div>`;
+      }
+    }
+    return html;
+  }
 
   containForce(size, axis) {
     const strength = 0.1;
@@ -315,7 +301,23 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .append("g");
   }
 
-  showTooltip() {}
+  setTooltip() {
+    this.tooltip.transition().style("opacity", 0.8);
+
+    let tooltipHtml = "";
+    this.attrTooltip.map((key) => {
+      if (d.hasOwnProperty(key)) {
+        tooltipHtml += `<div><strong>${key}:</strong> ${d[key]}</div>`;
+      }
+    });
+
+    this.tooltip
+      .html(tooltipHtml)
+      .style("left", event.pageX + "px")
+      .style("top", event.pageY - 28 + "px")
+      .style("display", "block");
+    d3.select(this).transition().style("display", "none");
+  }
 
   showLegend(value) {
     this.settings.showLegend = value;
