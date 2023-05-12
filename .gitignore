@@ -3,4 +3,3 @@ documentation
 .idea
 *.log
 package-lock.json
-dist
