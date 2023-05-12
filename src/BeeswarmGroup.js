@@ -1,4 +1,4 @@
-import VisualizationAbstract from "./VisualizationAbstract";
+import VisualizationAbstract from "./VisualizationAbstract.js";
 
 export default class BeeswarmGroup extends VisualizationAbstract {
   attrTooltip = [];
@@ -13,12 +13,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     settings
   ) {
     super(htmlElementId, width, height, settings);
-    this.margin = settings.margin ?? {
-      top: 30,
-      right: 10,
-      bottom: 60,
-      left: 60,
-    };
+    this.margin = settings.margin;
     this.element = htmlElementId;
     this.data = data;
     this.xLabel = xLabel;
@@ -33,7 +28,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     this.settings.opacity = settings.opacity ?? 1;
     this.settings.highlightColor = settings.highlightColor ?? "red";
     this.settings.forceSteps = settings.forceSteps ?? 300;
-    this.settings.forceX = settings.forceX ?? 1;
+    this.settings.forceX = settings.forceX ?? 3;
     this.settings.forceY = settings.forceY ?? 5;
     this.theme = settings.theme;
     this.settings.forceCollider = settings.forceCollider ?? 1;
@@ -41,17 +36,11 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     this.settings.showLegend = settings.showLegend ?? false;
   }
 
-  prepareData() {
-    // super.data(dataset);
-  }
+  prepareData() {}
 
   draw() {
     super.draw();
     var x, y;
-
-    console.log("this.data", this.data[0]);
-    // console.log(this.data.classificacaoAmbiental);
-    // console.log(this.data['classificacaoAmbiental'])
 
     if (
       typeof this.data[0][this.xLabel] === "string" &&
@@ -77,14 +66,13 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       x.domain(d3.extent(this.data, (d) => moment(d[this.xLabel]).toDate()));
     }
 
-    // Definir a escala do eixo Y
     if (
       typeof this.data[0][this.yLabel] === "string" &&
       isNaN(this.data[0][this.yLabel])
     ) {
       y = d3
         .scaleBand()
-        .range([this.height - this.margin.bottom, 0 + this.margin.top])
+        .range([this.height - this.margin.bottom, this.margin.top])
         .padding(1);
       y.domain(this.data.map((d) => d[this.yLabel]));
     } else if (
@@ -92,10 +80,9 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       !isNaN(this.data[0][this.yLabel])
     ) {
       const eixoY = this.data.map((d) => +d[this.yLabel]).sort((a, b) => a - b);
-      console.log(eixoY);
       y = d3
         .scaleLinear()
-        .range([this.height - this.margin.bottom, 0 + this.margin.top]);
+        .range([this.height - this.margin.bottom, this.margin.top]);
       y.domain(d3.extent(eixoY, (d) => d));
     } else if (this.data[0][this.xLabel] instanceof Date) {
       y = d3
@@ -112,6 +99,8 @@ export default class BeeswarmGroup extends VisualizationAbstract {
   resize() {}
 
   drawDots(x, y) {
+    const self = this;
+
     let selected = [];
     const tooltip = d3
       .select("body")
@@ -119,9 +108,8 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-    // Criar a simulação de força
     const colorScheme = this.settings.colors ?? undefined;
-    const { colorScale, categories } = this.setColor(
+    const colors = this.setColor(
       this.settings.colorAttr,
       colorScheme,
       this.settings.interpolate
@@ -166,6 +154,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
 
     console.log("this.settings.colorAttr", this.settings.colorAttr);
     const dotGroup = this.forenground.append("g").attr("class", "dots");
+
     dotGroup
       .selectAll(".dot")
       .data(positionedData)
@@ -175,21 +164,35 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .attr("d", hexagon(this.radius))
       .attr("transform", (d) => `translate(${d.x},${d.y})`)
       .attr("cursor", "pointer")
-      .attr("fill", (d) => colorScale(d[this.settings.colorAttr]))
-      .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
+      .attr("fill", (d) => colors(d[this.settings.colorAttr]))
+      // .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
       .on("mouseover", function (event, d) {
-        d3.select(this).attr("opacity", 0.8);
-        if (this.settings.showTooltip) {
-        }
-        // tooltip.transition().style("opacity", 1);
+        tooltip.transition().style("opacity", 0.8);
+
+        // let tooltipHtml = "";
+        // self.attrTooltip.map((key) => {
+        //   if (d.hasOwnProperty(key)) {
+        //     tooltipHtml += `<div><strong>${key}:</strong> ${d[key]}</div>`;
+        //   }
+        // });
+
         // tooltip
-        //   .html(this.getAttribute("title"))
+        //   .html(tooltipHtml)
         //   .style("left", event.pageX + "px")
-        //   .style("top", event.pageY - 28 + "px");
+        //   .style("top", event.pageY - 28 + "px")
+        //   .style("display", "block");
+        // d3.select(this)
+          // .transition()
+          // .style("display", "none")     
       })
-      .on("mouseout", function (d) {
-        d3.select(this).attr("opacity", 1);
-        // tooltip.transition().style("opacity", 0);
+      .on("mouseleave", function () {
+        // evento mouseleave adicionado
+        // console.log('saiu');
+        // d3.select(this).attr("opacity", 1);
+        // tooltip.transition().style("opacity", 0)
+        // .transition()
+        //       .style("opacity", 0)
+        //       .style("display", "none")
       })
       .on("click", function (d) {
         const circle = d3.select(this);
@@ -207,105 +210,54 @@ export default class BeeswarmGroup extends VisualizationAbstract {
   }
 
   drawAxis(x, y) {
-    const xAxis = d3.axisBottom(x);
-    const yAxis = d3.axisLeft(y);
+    const xAxis = d3.axisBottom(x).tickSize(-this.height + this.margin.bottom);
+    const yAxis = d3
+      .axisLeft(y)
+      .tickSize(-this.width + this.margin.left + this.margin.right);
 
     this.axisX
       .append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(${this.margin.left},${this.height})`)
+      .attr("transform", `translate(0, ${this.height - this.margin.top})`) // Alterado aqui
       .call(xAxis);
 
     this.axisY
       .append("g")
       .attr("class", "y-axis")
-      .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
+      .attr("transform", `translate(${this.margin.left}, 0)`) // Alterado aqui
       .call(yAxis);
   }
 
-  drawAxislegend(x, y) {
-    // Adicionar títulos para os eixos
-    const xAxis = d3.axisBottom(x);
-    const yAxis = d3.axisLeft(y);
+  // drawAxislegend(x,y) {
+  //   const xAxis = d3.axisBottom(x);
+  //   const yAxis = d3.axisLeft(y);
 
-    this.forenground
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(${0},${this.height - this.margin.top}))`)
-      .call(xAxis);
+  //   this.forenground
+  //     .append("g")
+  //     .attr("class", "x-axis")
+  //     .attr("transform", `translate(${0},${this.height - (this.margin.bottom+this.margin.top)})`) // modificação aqui
+  //     .call(xAxis);
 
-    this.forenground
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${0},${0}))`)
-      .call(yAxis);
-  }
-
-  /**
-   * @param {*} attribute
-   * @param {*} colors
-   */
-  setColor(colorColumn, colors, sequentialInterpolator) {
-    let colorScale;
-    let schemeColor = colors ?? d3.schemeCategory10;
-    let categories;
-    const isNumber = isNaN(this.data[0][colorColumn]);
-    // Verifica se a coluna de cores é numérica ou categórica
-    const isNumeric = typeof +this.data[0][colorColumn] === "number";
-    const isCategorical = typeof this.data[0][colorColumn] === "string";
-    // Cria a escala de cores apropriada com base no tipo da coluna de cores
-    if (isNumeric && !isNumber) {
-      const interpolator = this.settings.colors
-        ? this.createCustomInterpolator()
-        : sequentialInterpolator;
-      colorScale = d3
-        .scaleSequential()
-        .domain(d3.extent(this.data, (d) => d[colorColumn]))
-        .interpolator(interpolator);
-    } else if (isCategorical && isNumber) {
-      console.log("é categorico");
-      categories = Array.from(new Set(this.data.map((d) => d[colorColumn])));
-
-      colorScale = d3.scaleOrdinal().domain(categories).range(schemeColor);
-    } else {
-      // Se a coluna de cores não for numérica nem categórica, retorna null
-      console.warn("Invalid color column");
-      colorScale = null;
-    }
-
-    return { colorScale, categories };
-  }
-
-  setColors(colors) {}
-
-  /**
-   * @description - draw container initially in svg
-   */
-  drawContainer() {
-    this.forenground = d3
-      .select("svg")
-      .attr("width", this.width + this.margin.left + this.margin.right)
-      .attr("height", this.height + this.margin.top + this.margin.bottom)
-      .append("g")
-      .attr(
-        "transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")"
-      );
-  }
+  //   this.forenground
+  //     .append("g")
+  //     .attr("class", "y-axis")
+  //     .attr("transform", `translate(${this.margin.left},${0})`) // modificação aqui
+  //     .call(yAxis);
+  // }
 
   setTooltipLabels(titles) {
     this.attrTooltip = titles;
   }
 
-  generateTooltipHtml(d, titles) {
-    let html = "";
-    for (const [key, value] of Object.entries(d)) {
-      if (titles.includes(key)) {
-        html += `<div><strong>${key}:</strong> ${value}</div>`;
-      }
-    }
-    return html;
-  }
+  // generateTooltipHtml(d, titles) {
+  //   let html = "";
+  //   for (const [key, value] of Object.entries(d)) {
+  //     if (titles.includes(key)) {
+  //       html += `<div><strong>${key}:</strong> ${value}</div>`;
+  //     }
+  //   }
+  //   return html;
+  // }
 
   containForce(size, axis) {
     const strength = 0.1;
@@ -321,10 +273,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     };
   }
 
-  createCustomInterpolator() {
-    return d3.interpolateRgbBasis(this.settings.colors);
-  }
-
   calculateSwarmPlotPositions(data, xScale, yScale, radius) {
     const positionedData = data.map((d) => ({ ...d }));
     const sortedData = positionedData.sort(
@@ -333,10 +281,16 @@ export default class BeeswarmGroup extends VisualizationAbstract {
 
     const simulation = d3
       .forceSimulation(sortedData)
-      .force("x", d3.forceX((d) => xScale(d[this.xLabel])).strength(1))
-      .force("y", d3.forceY((d) => yScale(d[this.yLabel])).strength(5))
+      .force(
+        "x",
+        d3.forceX((d) => xScale(d[this.xLabel])).strength(this.settings.forceX)
+      )
+      .force(
+        "y",
+        d3.forceY((d) => yScale(d[this.yLabel])).strength(this.settings.forceY)
+      )
       .force("collide", d3.forceCollide(this.radius + 1).strength(1))
-      .force("containX", this.containForce(this.width - this.margin.right, "x"))
+      .force("containX", this.containForce(this.width - this.margin.left, "x"))
       .force(
         "containY",
         this.containForce(
@@ -346,7 +300,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       )
       .stop();
 
-    // Executar a simulação de força pelos passos definidos
     for (let i = 0; i < this.settings.forceSteps; i++) {
       simulation.tick();
     }
@@ -354,9 +307,15 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     return sortedData;
   }
 
-  showTooltip(value) {
-    this.settings.showTooltip = value;
+  drawContainer() {
+    this.forenground = this.forenground
+      .append("g")
+      .attr("width", -this.width - this.margin.left)
+      .attr("height", this.height - this.margin.top)
+      .append("g");
   }
+
+  showTooltip() {}
 
   showLegend(value) {
     this.settings.showLegend = value;

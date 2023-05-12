@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-
+import "./styles/main.css";
 export default class VisualizationAbstract {
   /**
    *
@@ -36,8 +36,8 @@ export default class VisualizationAbstract {
       color: "#23a88e",
     };
 
-    this.margin = { top: 0, left: 0, bottom: 0, right: 0 };
-
+    this.margin = settings.margin;
+    console.log('this.margin in container', this.margin);
     this.padding = {
       top: 0,
       left: 0,
@@ -58,7 +58,9 @@ export default class VisualizationAbstract {
 
     this.axisY = this.background.append("g").attr("class", "layer-axisY");
 
-    this.forenground = this.svg.append("g").attr("class", "layer-forenground");
+    this.forenground = this.svg
+      .append("g")
+      .attr("class", "layer-forenground");
 
     this.highlight = this.svg.append("g").attr("class", "layer-highlight");
   }
@@ -84,6 +86,46 @@ export default class VisualizationAbstract {
    * @description - função de redimencionar
    */
   resize() {}
+
+  /**
+   * @param {*} attribute
+   * @param {*} colors
+   */
+  setColor(colorColumn, colors, sequentialInterpolator) {
+    let colorScale;
+    let schemeColor = colors ?? d3.schemeCategory10;
+    const isNumber = isNaN(this.data[0][colorColumn]);
+    // Verifica se a coluna de cores é numérica ou categórica
+    const isNumeric = typeof +this.data[0][colorColumn] === "number";
+    const isCategorical = typeof this.data[0][colorColumn] === "string";
+    // Cria a escala de cores apropriada com base no tipo da coluna de cores
+    if (isNumeric && !isNumber) {
+      const interpolator = this.settings.colors
+        ? this.createCustomInterpolator()
+        : sequentialInterpolator;
+      colorScale = d3
+        .scaleSequential()
+        .domain(d3.extent(this.data, (d) => d[colorColumn]))
+        .interpolator(interpolator);
+    } else if (isCategorical && isNumber) {
+      console.log("é categorico");
+      const categories = Array.from(
+        new Set(this.data.map((d) => d[colorColumn]))
+      );
+
+      colorScale = d3.scaleOrdinal().domain(categories).range(schemeColor);
+    } else {
+      // Se a coluna de cores não for numérica nem categórica, retorna null
+      console.warn("Invalid color column");
+      colorScale = null;
+    }
+
+    return colorScale;
+  }
+
+  createCustomInterpolator() {
+    return d3.interpolateRgbBasis(this.settings.colors);
+  }
 
   drawLegend(colors, categories) {
     const legend = d3.select("#legend");
@@ -216,5 +258,5 @@ export default class VisualizationAbstract {
       .append("div")
       .attr("class", "legend-text")
       .text((d) => d);
-  }
+    }
 }

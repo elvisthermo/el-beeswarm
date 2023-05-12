@@ -154,3 +154,12 @@ ul.legend-ul > li>div{
   overflow: hidden;
   transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
 }
+
+path.domain{
+  opacity: 0.1;
+
+}
+
+.tick > line {
+  opacity: 0.1;
+}

@@ -1,11 +1,19 @@
 {
     "name": "el-beeswarm",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "",
-    "main": "src/index.js",
+    "main": "./dist/cjs/el_beeswarm.min.js",
+    "module": "./dist/esm/el_beeswarm.min.js",
+    "type": "module",
+    "exports": {
+      "require": "./dist/cjs/el_beeswarm.min.js",
+      "import": "./dist/esm/el_beeswarm.min.js"
+    },
     "scripts": {
-        "start": "webpack serve --hot --mode production",
-        "build": "webpack --mode production"
+        "start": "webpack-dev-server --config webpack.config.dev.cjs --mode development",
+        "build": "webpack --config webpack.config.prod.cjs --mode production",
+        "prepare": "run-s build copy-files",
+        "copy-files": "copy README.md dist && copy LICENSE dist"
     },
     "author": "",
     "license": "ISC",

@@ -1,4 +1,4 @@
-import VisualizationAbstract from "./VisualizationAbstract";
+import VisualizationAbstract from "./VisualizationAbstract.js";
 
 export default class BeeswarmDimensions extends VisualizationAbstract {
   attrTooltip = [];
@@ -95,7 +95,7 @@ export default class BeeswarmDimensions extends VisualizationAbstract {
 
     // Criar a simulação de força
     const colorScheme = this.settings.colors ?? undefined;
-    const { colors, categories } = this.setColor(this.xLabel, colorScheme);
+    const colors = this.setColor(this.xLabel, colorScheme);
     // Adicionar os círculos
     this.drawLegend(colors, categories);
 
@@ -178,33 +178,33 @@ export default class BeeswarmDimensions extends VisualizationAbstract {
     this.axisX
       .append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(${this.margin.left},${this.height})`)
+      .attr("transform", `translate(${0},${0})`)
       .call(xAxis);
 
     this.axisY
       .append("g")
       .attr("class", "y-axis")
-      .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
+      .attr("transform", `translate(${0},${0})`)
       .call(yAxis);
   }
 
-  drawAxislegend() {
-    // Adicionar títulos para os eixos
-    const xAxis = d3.axisBottom(x);
-    const yAxis = d3.axisLeft(y);
+  // drawAxislegend() {
+  //   // Adicionar títulos para os eixos
+  //   const xAxis = d3.axisBottom(x);
+  //   const yAxis = d3.axisLeft(y);
 
-    this.forenground
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(${0},${this.height - this.margin.top}))`)
-      .call(xAxis);
+  //   this.forenground
+  //     .append("g")
+  //     .attr("class", "x-axis")
+  //     .attr("transform", `translate(${0},${this.height - this.margin.top}))`)
+  //     .call(xAxis);
 
-    this.forenground
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${0},${0}))`)
-      .call(yAxis);
-  }
+  //   this.forenground
+  //     .append("g")
+  //     .attr("class", "y-axis")
+  //     .attr("transform", `translate(${0},${0}))`)
+  //     .call(yAxis);
+  // }
 
   /**
    * @param {*} attribute

@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="UTF-8" />
     <title>Title</title>
-    <script src="../dist/bundle.js"></script>
+    <!-- <script src="../dist/bundle.js"></script> -->
+    <script src="http://localhost:8080/bundle.js"></script>
+
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../src/styles/main.css"></link>
 
@@ -42,11 +44,112 @@
           console.log('interpolate color',d3.interpolateMagma)
 
           // htmlElementId,data, xType, yType, xLabel, yLabel, radius, width, height
-          beeswarm = new casvis.BeeswarmGroup(
+          beeswarm0 = new vis.BeeswarmPlot(
+            "canvas0",
+            dataset,
+            attr[3],
+            5,
+            700,
+            400,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              highlightColor: "#FF1122", //"#08E700",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 700,
+              height: 400,
+              paddingTop: 25,
+              paddingLeft: 50,
+              paddingRight: 50,
+              paddingBottom: 30,
+              autoresize: true,
+              colorAttr: attr[4],
+              theme: "light",
+              orientation: 'y',
+              margin:{top: 30, right: 10, bottom: 60, left: 60 },
+              showLegend: true,
+
+              // colors:['red','blue','pink',"green"]
+            })
+          );
+          beeswarm0.setTooltipLabels(
+            [attr[3],
+            attr[4]]);
+          beeswarm0.draw();
+          console.log(beeswarm0);
+          
+          beeswarm = new vis.BeeswarmPlot(
             "canvas1",
             dataset,
+            attr[3],
+            5,
+            700,
+            400,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              highlightColor: "#FF1122", //"#08E700",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 700,
+              height: 400,
+              paddingTop: 25,
+              paddingLeft: 50,
+              paddingRight: 50,
+              paddingBottom: 30,
+              autoresize: true,
+              colorAttr: attr[4],
+              margin:{top: 30, right: 10, bottom: 60, left: 60 },
+              theme: "light",
+              orientation: 'x',
+              // colors:['red','blue','pink',"green"]
+            })
+          );
+          beeswarm.setTooltipLabels(
+            [attr[3],
+            attr[4]]);
+          beeswarm.draw();
+          console.log(beeswarm);
+
+          beeswarm3 = new vis.BeeswarmGroup(
+            "canvas2",
+            dataset,
             attr[4],
-            attr[7],
+            attr[1],
+            4,
+            800,
+            400,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              highlightColor: "#FF1122", //"#08E700",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 800,
+              height: 600,
+              paddingTop: 25,
+              paddingLeft: 50,
+              paddingRight: 50,
+              paddingBottom: 30,
+              autoresize: true,
+              margin:{top: 30, right: 10, bottom: 60, left: 60 },
+              colorAttr: attr[1],
+              theme: "dark",
+              // colors:['red','blue','pink',"green"]
+            })
+          );
+          beeswarm3.setTooltipLabels(
+            [attr[4],
+            attr[1]]);
+          beeswarm3.draw();
+          console.log(beeswarm3);
+        
+          beeswarm2 = new vis.BeeswarmGroup(
+            "canvas3",
+            dataset,
+            attr[2],
+            attr[4],
             5,
             800,
             400,
@@ -63,24 +166,100 @@
               paddingRight: 50,
               paddingBottom: 30,
               autoresize: true,
+              margin:{top: 30, right: 60, bottom: 60, left: 60 },
               colorAttr: attr[4],
-              theme: "dark",
-              showLegend : false
+              forceX:5,
+              forceY:5,
+              theme: "light",
+              // colors:['red','blue','pink',"green"]
             })
           );
-          beeswarm.setTooltipLabels(
-            [attr[2],
-            attr[4]]);
-          beeswarm.draw();
-          console.log(beeswarm);
-        }
+          beeswarm2.setTooltipLabels(
+            [attr[4],
+            attr[2]]);
+          beeswarm2.draw();
+          console.log(beeswarm2);
 
+          beeswarm4 = new vis.BeeswarmGroup(
+            "canvas4",
+            dataset,
+            attr[0],
+            attr[4],
+            4,
+            800,
+            400,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              highlightColor: "#FF1122", //"#08E700",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 800,
+              height: 600,
+              paddingTop: 25,
+              paddingLeft: 50,
+              paddingRight: 50,
+              paddingBottom: 30,
+              autoresize: true,
+              margin:{top: 10, right: 10, bottom: 60, left: 60 },
+              colorAttr: attr[3],
+              theme: "dark",
+              colors:['blue','pink',"green"],
+              forceSteps: 1000
+              // colors:['red','blue','pink',"green"]
+            })
+          );
+          beeswarm4.setTooltipLabels(
+            [attr[3],
+            attr[4]]);
+          beeswarm4.draw();
+          console.log(beeswarm4)
+
+          beeswarm5 = new vis.BeeswarmGroup(
+            "canvas5",
+            dataset,
+            attr[1],
+            attr[4],
+            10,
+            800,
+            800,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              highlightColor: "#FF1122", //"#08E700",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 800,
+              height: 800,
+              paddingTop: 25,
+              paddingLeft: 50,
+              paddingRight: 50,
+              paddingBottom: 30,
+              autoresize: true,
+              margin:{top: 30, right: 10, bottom: 60, left: 60 },
+              colorAttr: attr[1],
+              theme: "dark",
+              interpolate: d3.interpolateMagma,
+              forceX: 5,
+              forceY:2
+              // colors:['red','blue','pink',"green"]
+            })
+          );
+          beeswarm5.setTooltipLabels(
+            attr);
+          beeswarm5.draw();
+          console.log(beeswarm5)
+        }
         main();
       };
     </script>
+    <div id="canvas0"></div>
     <div id="canvas1"></div>
     <div id="legend"></div>
     <div id="canvas2"></div>
     <div id="canvas3"></div>
+    <div id="canvas4"></div>
+    <div id="canvas5"></div>
+    <div id="canvas6"></div>
   </body>
 </html>
