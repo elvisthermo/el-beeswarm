@@ -47,7 +47,7 @@
           beeswarm0 = new vis.BeeswarmPlot(
             "canvas0",
             dataset,
-            attr[3],
+            attr[7],
             5,
             700,
             400,
@@ -64,12 +64,12 @@
               paddingRight: 50,
               paddingBottom: 30,
               autoresize: true,
-              colorAttr: attr[4],
+              colorAttr: attr[7],
               theme: "light",
               orientation: 'y',
               margin:{top: 30, right: 10, bottom: 60, left: 60 },
               showLegend: true,
-
+              interpolate: d3.interpolateMagma
               // colors:['red','blue','pink',"green"]
             })
           );
@@ -82,7 +82,7 @@
           beeswarm = new vis.BeeswarmPlot(
             "canvas1",
             dataset,
-            attr[3],
+            attr[7],
             5,
             700,
             400,
@@ -99,7 +99,7 @@
               paddingRight: 50,
               paddingBottom: 30,
               autoresize: true,
-              colorAttr: attr[4],
+              colorAttr: attr[7],
               margin:{top: 30, right: 10, bottom: 60, left: 60 },
               theme: "light",
               orientation: 'x',
