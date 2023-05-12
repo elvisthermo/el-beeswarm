@@ -35,8 +35,8 @@ export default class VisualizationAbstract {
       color: "#23a88e",
     };
 
-    this.margin = { top: settings.top, right: settings.right, bottom: settings.bottom, left: settings.left };
-
+    this.margin = settings.margin;
+    console.log('this.margin in container', this.margin);
     this.padding = {
       top: 0,
       left: 0,
@@ -59,13 +59,7 @@ export default class VisualizationAbstract {
 
     this.forenground = this.svg
       .append("g")
-      .attr("class", "layer-forenground")
-      .attr("width", this.config.width - (this.margin.left + this.margin.right))
-      .attr("height", this.config.height - (this.margin.top + this.margin.bottom))
-      .attr(
-        "transform",
-        `translate(${this.margin.left}, ${this.margin.top})`
-      );
+      .attr("class", "layer-forenground");
 
     this.highlight = this.svg.append("g").attr("class", "layer-highlight");
   }

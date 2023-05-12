@@ -65,14 +65,16 @@
               paddingBottom: 30,
               autoresize: true,
               colorAttr: attr[4],
-              theme: "dark",
+              theme: "light",
               orientation: 'y',
+              margin:{top: 30, right: 10, bottom: 60, left: 60 }
+
               // colors:['red','blue','pink',"green"]
             })
           );
-          // beeswarm.setTooltipLabels(
-          //   [attr[2],
-          //   attr[4]]);
+          beeswarm0.setTooltipLabels(
+            [attr[3],
+            attr[4]]);
           beeswarm0.draw();
           console.log(beeswarm0);
           
@@ -98,14 +100,14 @@
               autoresize: true,
               colorAttr: attr[4],
               margin:{top: 30, right: 10, bottom: 60, left: 60 },
-              theme: "dark",
+              theme: "light",
               orientation: 'x',
               // colors:['red','blue','pink',"green"]
             })
           );
-          // beeswarm.setTooltipLabels(
-          //   [attr[2],
-          //   attr[4]]);
+          beeswarm.setTooltipLabels(
+            [attr[3],
+            attr[4]]);
           beeswarm.draw();
           console.log(beeswarm);
 
@@ -114,7 +116,7 @@
             dataset,
             attr[4],
             attr[1],
-            5,
+            4,
             800,
             400,
             (this.settings = {
@@ -145,8 +147,8 @@
           beeswarm2 = new vis.BeeswarmGroup(
             "canvas3",
             dataset,
+            attr[2],
             attr[4],
-            attr[3],
             5,
             800,
             400,
@@ -163,24 +165,26 @@
               paddingRight: 50,
               paddingBottom: 30,
               autoresize: true,
-              margin:{top: 30, right: 10, bottom: 60, left: 60 },
+              margin:{top: 30, right: 60, bottom: 60, left: 60 },
               colorAttr: attr[4],
-              theme: "dark",
+              forceX:5,
+              forceY:5,
+              theme: "light",
               // colors:['red','blue','pink',"green"]
             })
           );
           beeswarm2.setTooltipLabels(
             [attr[4],
-            attr[3]]);
+            attr[2]]);
           beeswarm2.draw();
           console.log(beeswarm2);
 
           beeswarm4 = new vis.BeeswarmGroup(
             "canvas4",
             dataset,
-            attr[3],
+            attr[0],
             attr[4],
-            5,
+            4,
             800,
             400,
             (this.settings = {
@@ -196,9 +200,11 @@
               paddingRight: 50,
               paddingBottom: 30,
               autoresize: true,
-              margin:{top: 30, right: 10, bottom: 60, left: 60 },
-              colorAttr: attr[4],
+              margin:{top: 10, right: 10, bottom: 60, left: 60 },
+              colorAttr: attr[3],
               theme: "dark",
+              colors:['blue','pink',"green"],
+              forceSteps: 1000
               // colors:['red','blue','pink',"green"]
             })
           );
@@ -211,11 +217,11 @@
           beeswarm5 = new vis.BeeswarmGroup(
             "canvas5",
             dataset,
+            attr[1],
             attr[4],
-            attr[3],
-            5,
+            10,
             800,
-            400,
+            800,
             (this.settings = {
               color: "#069", //"grey",//"#069",
               highlightColor: "#FF1122", //"#08E700",
@@ -223,7 +229,7 @@
               notSelectedOpacity: 0.15,
               size_type: "fit", //"absolute"
               width: 800,
-              height: 400,
+              height: 800,
               paddingTop: 25,
               paddingLeft: 50,
               paddingRight: 50,
@@ -239,8 +245,7 @@
             })
           );
           beeswarm5.setTooltipLabels(
-            [attr[3],
-            attr[4]]);
+            attr);
           beeswarm5.draw();
           console.log(beeswarm5)
         }

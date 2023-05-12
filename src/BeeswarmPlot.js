@@ -158,11 +158,11 @@ export default class BeeswarmPlot extends VisualizationAbstract {
       .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
       .on("mouseover", function (event, d) {
         d3.select(this).attr("opacity", 0.8);
-        // tooltip.transition().style("opacity", 1);
-        // tooltip
-        //   .html(this.getAttribute("title"))
-        //   .style("left", event.pageX + "px")
-        //   .style("top", event.pageY - 28 + "px");
+        tooltip.transition().style("opacity", 1);
+        tooltip
+          .html(this.getAttribute("title"))
+          .style("left", event.pageX + "px")
+          .style("top", event.pageY - 28 + "px");
       })
       .on("mouseout", function (d) {
         d3.select(this).attr("opacity", 1);
@@ -184,8 +184,8 @@ export default class BeeswarmPlot extends VisualizationAbstract {
   }
 
   drawAxis(x, y) {
-    const xAxis = d3.axisBottom(x);
-    const yAxis = d3.axisLeft(y);
+    const xAxis = d3.axisBottom(x).tickSize(-this.height  + this.margin.bottom);
+    const yAxis = d3.axisLeft(y).tickSize(-this.width + this.margin.left + this.margin.right);
 
     if (this.orientation === "x") {
       this.axisX
