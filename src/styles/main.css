@@ -94,6 +94,67 @@
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
+div.legend-container{
+  width: 20%;
+  height: auto;
+  background-color: var(--card-bg-color);
+  margin: 5px;
+  padding: 5px;
+  border-radius: 10px; 
+  color: var(--font-color)
+}
+
+ul.legend-ul{
+  height: 280px;
+  overflow: auto;
+  /* margin: 0px 0px 0px 5px; */
+}
+
+ul.legend-ul::-webkit-scrollbar {
+  width: 8px;
+}
+
+ul.legend-ul::-webkit-scrollbar-track {
+  background-color: var(--bg-color);
+}
+
+ul.legend-ul::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 8px;
+}
+
+ul.legend-ul::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+ul.legend-ul > li{
+  display: flex; 
+  margin: 2px 0px 0px 5px;
+}
+
+ul.legend-ul > li>div{
+  display: flex; 
+  margin: 0px 10px 0px 0px;
+}
+.legend-header {
+  display: flex;
+  justify-content: flex-end;
+}
+.legend-header > .close-btn{
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.legend-ul.collapsed {
+  max-height: 0;
+  margin: 0px;
+  padding: 0px;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
 path.domain{
   opacity: 0.1;
 

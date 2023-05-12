@@ -27,7 +27,7 @@
 
     <script>
       function loadDataSet() {
-        const dataset = d3.csv("./dataset/iris.csv", function (data) {
+        const dataset = d3.csv("./dataset/carros_teste3.csv", function (data) {
           return data;
         });
 
@@ -39,7 +39,7 @@
           dataset = await loadDataSet();
 
           const attr = [
-          "sepal_length","sepal_width","petal_length","petal_width","variety"
+          "MARCA","COMBUSTIVEL","TURBO","NRPORTAS","TIPO","TRACAO","POSMOTOR","PESO","NRCILINDROS","POTENCIA","RPM","VALOR","ANO","ORIGEM"
           ];
           console.log('interpolate color',d3.interpolateMagma)
 
@@ -47,7 +47,7 @@
           beeswarm0 = new vis.BeeswarmPlot(
             "canvas0",
             dataset,
-            attr[3],
+            attr[7],
             5,
             700,
             400,
@@ -64,11 +64,12 @@
               paddingRight: 50,
               paddingBottom: 30,
               autoresize: true,
-              colorAttr: attr[4],
+              colorAttr: attr[7],
               theme: "light",
               orientation: 'y',
-              margin:{top: 30, right: 10, bottom: 60, left: 60 }
-
+              margin:{top: 30, right: 10, bottom: 60, left: 60 },
+              showLegend: true,
+              interpolate: d3.interpolateMagma
               // colors:['red','blue','pink',"green"]
             })
           );
@@ -81,7 +82,7 @@
           beeswarm = new vis.BeeswarmPlot(
             "canvas1",
             dataset,
-            attr[3],
+            attr[7],
             5,
             700,
             400,
@@ -98,7 +99,7 @@
               paddingRight: 50,
               paddingBottom: 30,
               autoresize: true,
-              colorAttr: attr[4],
+              colorAttr: attr[7],
               margin:{top: 30, right: 10, bottom: 60, left: 60 },
               theme: "light",
               orientation: 'x',
@@ -254,6 +255,7 @@
     </script>
     <div id="canvas0"></div>
     <div id="canvas1"></div>
+    <div id="legend"></div>
     <div id="canvas2"></div>
     <div id="canvas3"></div>
     <div id="canvas4"></div>

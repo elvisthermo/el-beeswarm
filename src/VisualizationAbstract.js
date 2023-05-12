@@ -25,6 +25,7 @@ export default class VisualizationAbstract {
       colorAttr: "",
       interpolate: settings.interpolate ?? d3.interpolateBlues,
       theme: settings.theme, //light or dark
+      showLegend : settings.showLegend ?? false,
       colors: ["#FF1122"],
     };
 
@@ -125,4 +126,137 @@ export default class VisualizationAbstract {
   createCustomInterpolator() {
     return d3.interpolateRgbBasis(this.settings.colors);
   }
+
+  drawLegend(colors, categories) {
+    const legend = d3.select("#legend");
+    // Adiciona botão para fechar a div de legendas
+
+    const legendDiv = legend
+      .append("div")
+      .attr("class", "legend-container dark-theme");
+
+    const legendHeader = legendDiv
+      .append("div")
+      .attr("class", "legend-header")
+      .append("button")
+      .attr("class", "close-btn")
+      .text("➖")
+      .on("click", function () {
+        const legendDiv = d3.select(".legend-ul");
+        // console.log(`ul`,legendDiv);
+        const icon = d3.select(this);
+        if (legendDiv.classed("collapsed")) {
+          // Expandir a div de legendas
+          legendDiv.classed("collapsed", false);
+          icon.text("➖");
+        } else {
+          // Encolher a div de legendas
+          legendDiv.classed("collapsed", true);
+          icon.text("➕");
+        }
+      });
+
+    if (categories) {
+      this.drawLegendCategorical(legendDiv, colors, categories);
+    } else if (this.settings.colors) {
+      this.drawLegendContinuos(legendDiv, 0, 3500, colors);
+    }
+
+    legendDiv.classed("collapsed", false);
+  }
+
+  drawLegendContinuos(minValue, maxValue, colorRange) {
+    console.log("testes");
+    console.log(minValue);
+    console.log(maxValue);
+    console.log(colorRange);
+
+    const colors = this.settings.colors;
+
+    const container = d3.select(".legend-container");
+
+    container.selectAll("svg").remove(); // Limpar qualquer conteúdo anterior no container
+    const togleContainer = container.append("ul").attr("class", "legend-ul");
+    const svg = togleContainer
+      .append("svg")
+      .attr("width", 200)
+      .attr("height", 40);
+
+    const width = 200;
+    const height = 100;
+    console.log("svg", svg);
+
+    const defs = svg.append("defs");
+
+    const gradient = defs
+      .append("linearGradient")
+      .attr("id", "gradient")
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "100%")
+      .attr("y2", "0%");
+
+    gradient
+      .selectAll("stop")
+      .data(colors)
+      .enter()
+      .append("stop")
+      .attr("offset", function (d, i) {
+        return (i / (colors.length - 1)) * 100 + "%";
+      })
+      .attr("stop-color", function (d) {
+        return d;
+      });
+
+    const rectWidth = width * 0.6;
+    const rectHeight = height * 0.1;
+    const rectX = width * 0.2;
+    const rectY = height * 0.9 - rectHeight / 2;
+
+    const rect = svg
+      .append("rect")
+      .attr("width", rectWidth)
+      .attr("height", 20)
+      .attr("x", 20)
+      .attr("y", 0)
+      .attr("fill", "url(#gradient)");
+
+    const minValueText = svg
+      .append("text")
+      .text(0)
+      .attr("x", rectX - 5)
+      .attr("y", 30)
+      .style("text-anchor", "end")
+      .style("dominant-baseline", "central");
+
+    const maxValueText = svg
+      .append("text")
+      .text(100)
+      .attr("x", rectX + rectWidth + 5)
+      .attr("y", 30)
+      .style("text-anchor", "start")
+      .style("dominant-baseline", "central");
+  }
+
+  drawLegendCategorical(legendDiv, colors, categories) {
+    const legendItems = legendDiv
+      .append("ul")
+      .attr("class", "legend-ul")
+      .selectAll("li")
+      .data(categories)
+      .enter()
+      .append("li");
+
+    legendItems
+      .append("div")
+      .style("width", "20px")
+      .style("height", "20px")
+      .style("border-radius", "50%")
+      .style("background-color", (d, i) => colors(d));
+
+    legendItems
+      .append("div")
+      .attr("class", "legend-text")
+      .text((d) => d);
+    }
 }

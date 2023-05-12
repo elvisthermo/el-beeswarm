@@ -32,6 +32,8 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     this.settings.forceY = settings.forceY ?? 5;
     this.theme = settings.theme;
     this.settings.forceCollider = settings.forceCollider ?? 1;
+    this.settings.showTooltip = settings.showTooltip ?? false;
+    this.settings.showLegend = settings.showLegend ?? false;
   }
 
   prepareData() {}
@@ -112,6 +114,10 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       colorScheme,
       this.settings.interpolate
     );
+    // Adicionar os círculos
+    if (this.settings.showLegend) {
+      this.drawLegend(colorScale, categories);
+    }
 
     const positionedData = this.calculateSwarmPlotPositions(
       this.data,
@@ -146,23 +152,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     // .attr("cx", (d) => d.x)
     // .attr("cy", (d) => d.y)
 
-    let translatex;
-    let translatey;
-
-    if (
-      typeof +this.data[0][this.yLabel] === "number" &&
-      !isNaN(this.data[0][this.yLabel])
-    ) {
-      translatex = 0;
-      translatey = this.margin.bottom;
-    }
-    if (
-      typeof +this.data[0][this.xLabel] === "number" &&
-      !isNaN(this.data[0][this.xLabel])
-    ) {
-      translatex = this.margin.left;
-      translatey = this.margin.top;
-    }
+    console.log("this.settings.colorAttr", this.settings.colorAttr);
     const dotGroup = this.forenground.append("g").attr("class", "dots");
 
     dotGroup
@@ -327,5 +317,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
 
   showTooltip() {}
 
-  showLegend() {}
+  showLegend(value) {
+    this.settings.showLegend = value;
+  }
 }

@@ -95,8 +95,9 @@ export default class BeeswarmDimensions extends VisualizationAbstract {
 
     // Criar a simulação de força
     const colorScheme = this.settings.colors ?? undefined;
-    const colors = this.setColor(this.attr, colorScheme);
+    const colors = this.setColor(this.xLabel, colorScheme);
     // Adicionar os círculos
+    this.drawLegend(colors, categories);
 
     const positionedData = this.calculateSwarmPlotPositions(
       this.data,
@@ -235,7 +236,7 @@ export default class BeeswarmDimensions extends VisualizationAbstract {
       colorScale = null;
     }
 
-    return colorScale;
+    return { colors: colorScale, categories };
   }
 
   /**
@@ -308,6 +309,27 @@ export default class BeeswarmDimensions extends VisualizationAbstract {
     }
 
     return sortedData;
+  }
+
+  drawLegend(colors, categories) {
+    const legend = d3.select("body");
+  
+    const legendItems = legend
+      .append("ul")
+      .selectAll("li")
+      .data(categories)
+      .enter()
+      .append("li");
+  
+    legendItems
+      .append("span")
+      .attr("class", "legend-dot")
+      .style("background-color", (d, i) => colors[i]);
+  
+    legendItems
+      .append("span")
+      .attr("class", "legend-text")
+      .text((d) => d);
   }
 
   showTooltip() {}
