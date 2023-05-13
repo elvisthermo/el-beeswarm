@@ -44,185 +44,82 @@
           console.log('interpolate color',d3.interpolateMagma)
 
           // htmlElementId,data, xType, yType, xLabel, yLabel, radius, width, height
-          // beeswarm0 = new vis.BeeswarmPlot(
-          //   "canvas0",
-          //   dataset,
-          //   attr[7],
-          //   5,
-          //   700,
-          //   400,
-          //   (this.settings = {
-          //     color: "#069", //"grey",//"#069",
-          //     highlightColor: "#FF1122", //"#08E700",
-          //     opacity: 1,
-          //     notSelectedOpacity: 0.15,
-          //     size_type: "fit", //"absolute"
-          //     width: 700,
-          //     height: 400,
-          //     paddingTop: 25,
-          //     paddingLeft: 50,
-          //     paddingRight: 50,
-          //     paddingBottom: 30,
-          //     autoresize: true,
-          //     colorAttr: attr[7],
-          //     theme: "light",
-          //     orientation: 'y',
-          //     margin:{top: 30, right: 10, bottom: 60, left: 60 },
-          //     showLegend: true,
-          //     interpolate: d3.interpolateMagma
-          //     // colors:['red','blue','pink',"green"]
-          //   })
-          // );
-          // beeswarm0.setTooltipLabels(
-          //   [attr[3],
-          //   attr[4]]);
-          // beeswarm0.draw();
-          // console.log(beeswarm0);
-          
-          // beeswarm = new vis.BeeswarmPlot(
-          //   "canvas1",
-          //   dataset,
-          //   attr[7],
-          //   5,
-          //   700,
-          //   400,
-          //   (this.settings = {
-          //     color: "#069", //"grey",//"#069",
-          //     highlightColor: "#FF1122", //"#08E700",
-          //     opacity: 1,
-          //     notSelectedOpacity: 0.15,
-          //     size_type: "fit", //"absolute"
-          //     width: 700,
-          //     height: 400,
-          //     paddingTop: 25,
-          //     paddingLeft: 50,
-          //     paddingRight: 50,
-          //     paddingBottom: 30,
-          //     autoresize: true,
-          //     colorAttr: attr[7],
-          //     margin:{top: 30, right: 10, bottom: 60, left: 60 },
-          //     theme: "light",
-          //     orientation: 'x',
-          //     // colors:['red','blue','pink',"green"]
-          //   })
-          // );
-          // beeswarm.setTooltipLabels(
-          //   [attr[3],
-          //   attr[4]]);
-          // beeswarm.draw();
-          // console.log(beeswarm);
-
-          // beeswarm3 = new vis.BeeswarmGroup(
-          //   "canvas2",
-          //   dataset,
-          //   attr[4],
-          //   attr[1],
-          //   4,
-          //   800,
-          //   400,
-          //   (this.settings = {
-          //     color: "#069", //"grey",//"#069",
-          //     highlightColor: "#FF1122", //"#08E700",
-          //     opacity: 1,
-          //     notSelectedOpacity: 0.15,
-          //     size_type: "fit", //"absolute"
-          //     width: 800,
-          //     height: 600,
-          //     paddingTop: 25,
-          //     paddingLeft: 50,
-          //     paddingRight: 50,
-          //     paddingBottom: 30,
-          //     autoresize: true,
-          //     margin:{top: 30, right: 10, bottom: 60, left: 60 },
-          //     colorAttr: attr[1],
-          //     theme: "dark",
-          //     // colors:['red','blue','pink',"green"]
-          //   })
-          // );
-          // beeswarm3.setTooltipLabels(
-          //   [attr[4],
-          //   attr[1]]);
-          // beeswarm3.draw();
-          // console.log(beeswarm3);
-        
-          // beeswarm2 = new vis.BeeswarmGroup(
-          //   "canvas3",
-          //   dataset,
-          //   attr[2],
-          //   attr[4],
-          //   5,
-          //   800,
-          //   400,
-          //   (this.settings = {
-          //     color: "#069", //"grey",//"#069",
-          //     highlightColor: "#FF1122", //"#08E700",
-          //     opacity: 1,
-          //     notSelectedOpacity: 0.15,
-          //     size_type: "fit", //"absolute"
-          //     width: 800,
-          //     height: 600,
-          //     paddingTop: 25,
-          //     paddingLeft: 50,
-          //     paddingRight: 50,
-          //     paddingBottom: 30,
-          //     autoresize: true,
-          //     margin:{top: 30, right: 60, bottom: 60, left: 60 },
-          //     colorAttr: attr[4],
-          //     forceX:5,
-          //     forceY:5,
-          //     theme: "light",
-          //     // colors:['red','blue','pink',"green"]
-          //   })
-          // );
-          // beeswarm2.setTooltipLabels(
-          //   [attr[4],
-          //   attr[2]]);
-          // beeswarm2.draw();
-          // console.log(beeswarm2);
-
-          // beeswarm4 = new vis.BeeswarmGroup(
-          //   "canvas4",
-          //   dataset,
-          //   attr[0],
-          //   attr[4],
-          //   4,
-          //   800,
-          //   400,
-          //   (this.settings = {
-          //     color: "#069", //"grey",//"#069",
-          //     highlightColor: "#FF1122", //"#08E700",
-          //     opacity: 1,
-          //     notSelectedOpacity: 0.15,
-          //     size_type: "fit", //"absolute"
-          //     width: 800,
-          //     height: 600,
-          //     paddingTop: 25,
-          //     paddingLeft: 50,
-          //     paddingRight: 50,
-          //     paddingBottom: 30,
-          //     autoresize: true,
-          //     margin:{top: 10, right: 10, bottom: 60, left: 60 },
-          //     colorAttr: attr[3],
-          //     theme: "dark",
-          //     colors:['blue','pink',"green"],
-          //     forceSteps: 1000
-          //     // colors:['red','blue','pink',"green"]
-          //   })
-          // );
-          // beeswarm4.setTooltipLabels(
-          //   [attr[3],
-          //   attr[4]]);
-          // beeswarm4.draw();
-          // console.log(beeswarm4)
-
-          beeswarm5 = new vis.BeeswarmGroup(
-            "canvas5",
+          beeswarm0 = new vis.BeeswarmPlot(
+            "canvas0",
             dataset,
-            attr[1],
+            attr[7],
+            5,
+            700,
+            400,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              highlightColor: "#FF1122", //"#08E700",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 700,
+              height: 400,
+              paddingTop: 25,
+              paddingLeft: 50,
+              paddingRight: 50,
+              paddingBottom: 30,
+              autoresize: true,
+              colorAttr: attr[7],
+              theme: "light",
+              orientation: 'y',
+              margin:{top: 30, right: 10, bottom: 60, left: 60 },
+              showLegend: true,
+              interpolate: d3.interpolateMagma
+              // colors:['red','blue','pink',"green"]
+            })
+          );
+          beeswarm0.setTooltipLabels(
+            [attr[3],
+            attr[4]]);
+          beeswarm0.draw();
+          console.log(beeswarm0);
+          
+          beeswarm = new vis.BeeswarmPlot(
+            "canvas1",
+            dataset,
+            attr[7],
+            5,
+            700,
+            400,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              highlightColor: "#FF1122", //"#08E700",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 700,
+              height: 400,
+              paddingTop: 25,
+              paddingLeft: 50,
+              paddingRight: 50,
+              paddingBottom: 30,
+              autoresize: true,
+              colorAttr: attr[7],
+              margin:{top: 30, right: 10, bottom: 60, left: 60 },
+              theme: "light",
+              orientation: 'x',
+              // colors:['red','blue','pink',"green"]
+            })
+          );
+          beeswarm.setTooltipLabels(
+            [attr[3],
+            attr[4]]);
+          beeswarm.draw();
+          console.log(beeswarm);
+
+          beeswarm3 = new vis.BeeswarmGroup(
+            "canvas2",
+            dataset,
             attr[4],
-            10,
+            attr[10],
+            4,
             800,
-            800,
+            400,
             (this.settings = {
               color: "#069", //"grey",//"#069",
               highlightColor: "#FF1122", //"#08E700",
@@ -230,7 +127,7 @@
               notSelectedOpacity: 0.15,
               size_type: "fit", //"absolute"
               width: 800,
-              height: 800,
+              height: 600,
               paddingTop: 25,
               paddingLeft: 50,
               paddingRight: 50,
@@ -239,27 +136,128 @@
               margin:{top: 30, right: 10, bottom: 60, left: 60 },
               colorAttr: attr[1],
               theme: "dark",
+              // colors:['red','blue','pink',"green"]
+            })
+          );
+          beeswarm3.setTooltipLabels(
+            [attr[4],
+            attr[1]]);
+          beeswarm3.draw();
+          console.log(beeswarm3);
+        
+          beeswarm2 = new vis.BeeswarmGroup(
+            "canvas3",
+            dataset,
+            attr[2],
+            attr[4],
+            5,
+            800,
+            400,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              highlightColor: "#FF1122", //"#08E700",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 800,
+              height: 600,
+              paddingTop: 25,
+              paddingLeft: 50,
+              paddingRight: 50,
+              paddingBottom: 30,
+              autoresize: true,
+              margin:{top: 30, right: 60, bottom: 60, left: 60 },
+              colorAttr: attr[4],
+              forceX:5,
+              forceY:5,
+              theme: "light",
+              // colors:['red','blue','pink',"green"]
+            })
+          );
+          beeswarm2.setTooltipLabels(
+            [attr[4],
+            attr[2]]);
+          beeswarm2.draw();
+          console.log(beeswarm2);
+
+          beeswarm4 = new vis.BeeswarmGroup(
+            "canvas4",
+            dataset,
+            attr[0],
+            attr[4],
+            4,
+            800,
+            400,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              highlightColor: "#FF1122", //"#08E700",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 800,
+              height: 600,
+              paddingTop: 25,
+              paddingLeft: 50,
+              paddingRight: 50,
+              paddingBottom: 30,
+              autoresize: true,
+              margin:{top: 10, right: 10, bottom: 60, left: 60 },
+              colorAttr: attr[3],
+              theme: "dark",
+              colors:['blue','pink',"green"],
+              dotsType: 'circle',
+              forceSteps: 1000
+              // colors:['red','blue','pink',"green"]
+            })
+          );
+          beeswarm4.setTooltipLabels(
+            [attr[3],
+            attr[4]]);
+          beeswarm4.draw();
+          console.log(beeswarm4)
+
+          beeswarm5 = new vis.BeeswarmGroup(
+            "canvas5",
+            dataset,
+            attr[7],
+            attr[4],
+            10,
+            800,
+            800,
+            (this.settings = {
+              color: "#069", //"grey",//"#069",
+              opacity: 1,
+              notSelectedOpacity: 0.15,
+              size_type: "fit", //"absolute"
+              width: 800,
+              height: 800,
+              highlightColor: "#FFFFFF",
+              autoresize: true,
+              margin:{top: 30, right: 10, bottom: 60, left: 60 },
+              colorAttr: attr[4],
+              theme: "dark",
               interpolate: d3.interpolateMagma,
               forceX: 5,
-              forceY:2
+              forceY:2,
+              dotsType: 'circle',
               // colors:['red','blue','pink',"green"]
             })
           );
           beeswarm5.setTooltipLabels(attr);
-          beeswarm5.setTooltip();
-
           beeswarm5.draw()
 
           beeswarm5.dotGroup.on('mouseover',(d)=>{
-            console.log(d)
-            console.log(d.title)
-            console.log(d.target)
-            d3.select(d.target).attr('stroke','red')
+            beeswarm5.setTooltip(d.target);
+            beeswarm5.setHighlight(d.target);
+
           })
           beeswarm5.dotGroup.on('mouseout',(d)=>{
-            d3.select(d.target).attr('stroke','none')
+            beeswarm5.setRemoverHighlight(d.target);
+            beeswarm5.setRemoveTooltip(d.target);
           })
-          console.log(test);
+          .on('click',(d)=>{
+            beeswarm5.setSelected(d.target);
+          })
 
 
             //console.log("d:",d);

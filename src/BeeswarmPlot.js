@@ -85,7 +85,6 @@ export default class BeeswarmPlot extends VisualizationAbstract {
   resize() {}
 
   drawDots(x, y) {
-    let selected = [];
     const tooltip = d3
       .select("body")
       .append("div")
@@ -123,65 +122,67 @@ export default class BeeswarmPlot extends VisualizationAbstract {
         .join("");
     };
 
-    // circle or hex
-    // .enter()
-    // .append("circle")
-    // .attr("class", "dot")
-    // .attr("r", this.radius)
-    // .attr("cx", (d) => d.x)
-    // .attr("cy", (d) => d.y)
-
     const attrOrientation = this.orientation==='x'?['x','y']:['y','x'];
     const attrTranslate = this.orientation==='x'?[0,this.height/2]:[this.width/2,0];
 
-    console.log(positionedData);
-    const dotGroup = this.forenground.append("g")
+    this.dotGroup = this.forenground.append("g")
     .attr("transform", `translate(${attrTranslate[0]}, ${attrTranslate[1]})`)
     .attr("class", "dots");
-    dotGroup
+    
+    this.dotGroup = this.settings.dotsType === 'circle' ? 
+    this.drawCircles(this.dotGroup, positionedData,colors,attrOrientation): 
+    this.drawHex(this.dotGroup, positionedData,colors,attrOrientation);
+
+    return this.dotGroup;
+  }
+
+  drawHex(element, positionedData,colors,positions) {
+    const hexagon = (radius) => {
+      const x = 0;
+      const y = 0;
+      const angles = [0, 60, 120, 180, 240, 300, 360].map(
+        (a) => (a * Math.PI) / 180
+      );
+      const points = angles.map((angle) => [
+        x + radius * Math.cos(angle),
+        y + radius * Math.sin(angle),
+      ]);
+
+      return points
+        .map((point, i) =>
+          i === 0 ? `M${point[0]},${point[1]}` : `L${point[0]},${point[1]}`
+        )
+        .join("");
+    };
+    
+    return element
       .selectAll(".dot")
       .data(positionedData)
       .enter()
       .append("path")
       .attr("class", "dot")
       .attr("d", hexagon(this.radius))
-      .attr("transform", (d) => `translate(${d[attrOrientation[0]]},${d[attrOrientation[1]]})`)
+      .attr("transform", (d) => `translate(${d[positions[0]]},${d[positions[1]]})`)
       .attr("cursor", "pointer")
-      // .append("circle")
-      // .attr("class", "dot")
-      // .attr("cx", d => d[attrOrientation[0]])
-      // .attr("cy", d => d[attrOrientation[1]])
-      // .attr("r", this.radius)
-      // .attr("cursor", "pointer")
-      .attr("fill", (d) => {
-        console.log(`d[this.settings.colorAttr]`,d[this.settings.colorAttr]);
-        return colors(d[this.settings.colorAttr])})
+      .attr("fill", (d) => colors(d[this.settings.colorAttr]))
       .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
-      .on("mouseover", function (event, d) {
-        d3.select(this).attr("opacity", 0.8);
-        tooltip.transition().style("opacity", 1);
-        tooltip
-          .html(this.getAttribute("title"))
-          .style("left", event.pageX + "px")
-          .style("top", event.pageY - 28 + "px");
-      })
-      .on("mouseout", function (d) {
-        d3.select(this).attr("opacity", 1);
-        // tooltip.transition().style("opacity", 0);
-      })
-      .on("click", function (d) {
-        const circle = d3.select(this);
-        const isSelected = circle.classed("selected");
-        if (isSelected) {
-          selected.splice(selected.indexOf(circle), 1);
-          circle.classed("selected", false);
-          circle.attr("stroke", "none").attr("opacity", 1);
-        } else {
-          selected.push(circle);
-          circle.classed("selected", true);
-          circle.attr("stroke", "red").attr("opacity", 1);
-        }
-      });
+      .attr("cursor", "pointer");
+  }
+
+  drawCircles(element, positionedData,colors,positions) {
+    return element
+      .selectAll(".dot")
+      .data(positionedData)
+      .enter()
+      .append("circle")
+      .attr("class", "dot")
+      .attr("r", this.radius)
+      .attr("cx", (d) => d[positions[0]])
+      .attr("cy", (d) => d[positions[1]])
+      .attr("cursor", "pointer")
+      .attr("fill", (d) => colors(d[this.settings.colorAttr]))
+      .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
+      .attr("cursor", "pointer");
   }
 
   drawAxis(x, y) {
@@ -203,53 +204,6 @@ export default class BeeswarmPlot extends VisualizationAbstract {
         .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
         .call(yAxis);
     }
-  }
-
-  drawAxislegend() {
-    // Adicionar títulos para os eixos
-    const xAxis = d3.axisBottom(x);
-    const yAxis = d3.axisLeft(y);
-
-    this.forenground
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(${0},${this.height - this.margin.top}))`)
-      .call(xAxis);
-
-    this.forenground
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${0},${0}))`)
-      .call(yAxis);
-  }
-
-  /**
-   * @description - draw container initially in svg
-   */
-  // drawContainer() {
-  //   this.forenground
-  //     .select(".layer-forenground")
-  //     .attr("width", this.width + this.margin.left + this.margin.right)
-  //     .attr("height", this.height + this.margin.top + this.margin.bottom)
-  //     .append("g")
-  //     .attr(
-  //       "transform",
-  //       "translate(" + this.margin.left + "," + this.margin.top + ")"
-  //     );
-  // }
-
-  setTooltipLabels(titles) {
-    this.attrTooltip = titles;
-  }
-
-  generateTooltipHtml(d, titles) {
-    let html = "";
-    for (const [key, value] of Object.entries(d)) {
-      if (titles.includes(key)) {
-        html += `<div><strong>${key}:</strong> ${value}</div>`;
-      }
-    }
-    return html;
   }
 
   containForce(size, axis) {
@@ -312,7 +266,4 @@ export default class BeeswarmPlot extends VisualizationAbstract {
     return circles;
   }
 
-  showTooltip() {}
-
-  showLegend() {}
 }

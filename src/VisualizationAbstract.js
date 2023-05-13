@@ -11,7 +11,7 @@ export default class VisualizationAbstract {
     this.data;
     this.settings = {
       color: "#069", //"grey",//"#069",
-      highlightColor: "#FF1122", //"#08E700",
+      highlightColor: settings.highlightColor ?? "red",
       opacity: 1,
       notSelectedOpacity: 0.15,
       size_type: "fit", //"absolute"
@@ -25,7 +25,7 @@ export default class VisualizationAbstract {
       colorAttr: "",
       interpolate: settings.interpolate ?? d3.interpolateBlues,
       theme: settings.theme, //light or dark
-      showLegend : settings.showLegend ?? false,
+      showLegend: settings.showLegend ?? false,
       colors: ["#FF1122"],
     };
 
@@ -36,8 +36,8 @@ export default class VisualizationAbstract {
       color: "#23a88e",
     };
 
+    this.selected = [];
     this.margin = settings.margin;
-    console.log('this.margin in container', this.margin);
     this.padding = {
       top: 0,
       left: 0,
@@ -58,11 +58,15 @@ export default class VisualizationAbstract {
 
     this.axisY = this.background.append("g").attr("class", "layer-axisY");
 
-    this.forenground = this.svg
-      .append("g")
-      .attr("class", "layer-forenground");
+    this.forenground = this.svg.append("g").attr("class", "layer-forenground");
 
     this.highlight = this.svg.append("g").attr("class", "layer-highlight");
+
+    this.tooltip = d3
+      .select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
   }
 
   /**
@@ -71,8 +75,6 @@ export default class VisualizationAbstract {
    */
   data(dataset) {
     this.data = dataset;
-
-    console.log(dataset);
   }
 
   /**
@@ -108,7 +110,6 @@ export default class VisualizationAbstract {
         .domain(d3.extent(this.data, (d) => d[colorColumn]))
         .interpolator(interpolator);
     } else if (isCategorical && isNumber) {
-      console.log("é categorico");
       const categories = Array.from(
         new Set(this.data.map((d) => d[colorColumn]))
       );
@@ -143,7 +144,6 @@ export default class VisualizationAbstract {
       .text("➖")
       .on("click", function () {
         const legendDiv = d3.select(".legend-ul");
-        // console.log(`ul`,legendDiv);
         const icon = d3.select(this);
         if (legendDiv.classed("collapsed")) {
           // Expandir a div de legendas
@@ -166,11 +166,6 @@ export default class VisualizationAbstract {
   }
 
   drawLegendContinuos(minValue, maxValue, colorRange) {
-    console.log("testes");
-    console.log(minValue);
-    console.log(maxValue);
-    console.log(colorRange);
-
     const colors = this.settings.colors;
 
     const container = d3.select(".legend-container");
@@ -184,7 +179,6 @@ export default class VisualizationAbstract {
 
     const width = 200;
     const height = 100;
-    console.log("svg", svg);
 
     const defs = svg.append("defs");
 
@@ -258,5 +252,155 @@ export default class VisualizationAbstract {
       .append("div")
       .attr("class", "legend-text")
       .text((d) => d);
+  }
+
+  setHighlight(element) {
+    d3.select(element)
+      .attr("stroke", this.settings.highlightColor)
+      .attr("opacity", 0.5);
+  }
+
+  setRemoverHighlight(element) {
+    const dots = d3.select(element);
+
+    const isSelected = dots.classed("selected");
+    if (isSelected) {
+      return d3.select(element).attr("opacity", 1);
     }
+    return d3.select(element).attr("stroke", "none").attr("opacity", 1);
+  }
+
+  setSelected(element) {
+    const dots = d3.select(element);
+    const isSelected = dots.classed("selected");
+    if (isSelected) {
+      this.selected.splice(this.selected.indexOf(dots), 1);
+      dots.classed("selected", false);
+      dots.attr("stroke", "none").attr("opacity", 1);
+    } else {
+      this.selected.push(dots);
+      dots.classed("selected", true);
+      dots.attr("stroke", this.settings.highlightColor).attr("opacity", 1);
+    }
+  }
+
+  generateTooltipHtml(d, titles) {
+    let html = "";
+    for (const [key, value] of Object.entries(d)) {
+      if (titles.includes(key)) {
+        html += `<div><strong>${key}:</strong> ${value}</div>`;
+      }
+    }
+    return html;
+  }
+
+  hideTooltipTimeout;
+
+  setTooltip(element) {
+    if (this.hideTooltipTimeout) {
+      clearTimeout(this.hideTooltipTimeout);
+    }
+
+    this.tooltip.transition().style("display", "block").style("opacity", 0.9);
+    this.tooltip
+      .html(element.getAttribute("title"))
+      .style("left", event.pageX + "px")
+      .style("top", event.pageY - 28 + "px");
+  }
+
+  setRemoveTooltip(element) {
+    this.hideTooltipTimeout = setTimeout(() => {
+      this.tooltip.style("display", "none").style("opacity", 0);
+    }, 1000); // 200 milissegundos de atraso
+  }
+
+  showLegend(value) {
+    this.settings.showLegend = value;
+  }
+
+  /**
+   * @description - draw container initially in svg
+   */
+  drawContainer() {
+    this.forenground
+      .select(".layer-forenground")
+      .attr("width", this.width + this.margin.left + this.margin.right)
+      .attr("height", this.height + this.margin.top + this.margin.bottom)
+      .append("g")
+      .attr(
+        "transform",
+        "translate(" + this.margin.left + "," + this.margin.top + ")"
+      );
+  }
+
+  setTooltipLabels(titles) {
+    this.attrTooltip = titles;
+  }
+
+  drawAxislegend() {
+    // Adicionar títulos para os eixos
+    const xAxis = d3.axisBottom(x);
+    const yAxis = d3.axisLeft(y);
+
+    this.forenground
+      .append("g")
+      .attr("class", "x-axis")
+      .attr("transform", `translate(${0},${this.height - this.margin.top}))`)
+      .call(xAxis);
+
+    this.forenground
+      .append("g")
+      .attr("class", "y-axis")
+      .attr("transform", `translate(${0},${0}))`)
+      .call(yAxis);
+  }
+
+  drawHex(element, positionedData, colors) {
+    const hexagon = (radius) => {
+      const x = 0;
+      const y = 0;
+      const angles = [0, 60, 120, 180, 240, 300, 360].map(
+        (a) => (a * Math.PI) / 180
+      );
+      const points = angles.map((angle) => [
+        x + radius * Math.cos(angle),
+        y + radius * Math.sin(angle),
+      ]);
+
+      return points
+        .map((point, i) =>
+          i === 0 ? `M${point[0]},${point[1]}` : `L${point[0]},${point[1]}`
+        )
+        .join("");
+    };
+
+    return element
+      .selectAll(".dot")
+      .data(positionedData)
+      .enter()
+      .append("path")
+      .attr("class", "dot")
+      .attr("d", hexagon(this.radius))
+      .attr("transform", (d) => `translate(${d.x},${d.y})`)
+      .attr("cursor", "pointer")
+      .attr("fill", (d) => colors(d[this.settings.colorAttr]))
+      .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
+      .attr("cursor", "pointer");
+  }
+
+  drawCircles(element, positionedData, colors) {
+    return element
+      .selectAll(".dot")
+      .data(positionedData)
+      .enter()
+      .append("circle")
+      .attr("class", "dot")
+      .attr("r", this.radius)
+      .attr("cx", (d) => d.x)
+      .attr("cy", (d) => d.y)
+      .attr("cursor", "pointer")
+      .attr("fill", (d) => colors(d[this.settings.colorAttr]))
+      .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
+      .attr("cursor", "pointer");
+  }
 }
