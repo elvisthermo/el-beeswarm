@@ -2,6 +2,7 @@ import VisualizationAbstract from "./VisualizationAbstract.js";
 
 export default class BeeswarmGroup extends VisualizationAbstract {
   attrTooltip = [];
+  dotGroup;
   constructor(
     htmlElementId,
     data,
@@ -21,7 +22,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     this.radius = radius || 5;
     this.width = width;
     this.height = height;
-    this.settings.dotsType = settings.dotsType ? settings.dotsType : "circle"; // circle/ hex
+    this.settings.dotsType = settings.dotsType ??"circle"; // circle/ hex
     this.settings.colorAttr = settings.colorAttr ?? undefined;
     this.settings.colors = settings.colors ?? undefined;
     this.settings.autoresize = settings.autoresize ?? true;
@@ -101,13 +102,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
   drawDots(x, y) {
     const self = this;
 
-    let selected = [];
-    const tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
-
     const colorScheme = this.settings.colors ?? undefined;
     const colors = this.setColor(
       this.settings.colorAttr,
@@ -126,88 +120,16 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       this.radius
     );
 
-    const hexagon = (radius) => {
-      const x = 0;
-      const y = 0;
-      const angles = [0, 60, 120, 180, 240, 300, 360].map(
-        (a) => (a * Math.PI) / 180
-      );
-      const points = angles.map((angle) => [
-        x + radius * Math.cos(angle),
-        y + radius * Math.sin(angle),
-      ]);
 
-      return points
-        .map((point, i) =>
-          i === 0 ? `M${point[0]},${point[1]}` : `L${point[0]},${point[1]}`
-        )
-        .join("");
-    };
+    this.dotGroup = this.forenground.append("g").attr("class", "dots");
 
-    // circle or hex
-    // .enter()
-    // .append("circle")
-    // .attr("class", "dot")
-    // .attr("r", this.radius)
-    // .attr("cx", (d) => d.x)
-    // .attr("cy", (d) => d.y)
+    this.dotGroup = this.settings.dotsType === 'circle' ? 
+    this.drawCircles(this.dotGroup, positionedData,colors): 
+    this.drawHex(this.dotGroup, positionedData,colors);
 
-    console.log("this.settings.colorAttr", this.settings.colorAttr);
-    const dotGroup = this.forenground.append("g").attr("class", "dots");
-
-    dotGroup
-      .selectAll(".dot")
-      .data(positionedData)
-      .enter()
-      .append("path")
-      .attr("class", "dot")
-      .attr("d", hexagon(this.radius))
-      .attr("transform", (d) => `translate(${d.x},${d.y})`)
-      .attr("cursor", "pointer")
-      .attr("fill", (d) => colors(d[this.settings.colorAttr]))
-      // .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
-      .on("mouseover", function (event, d) {
-        tooltip.transition().style("opacity", 0.8);
-
-        // let tooltipHtml = "";
-        // self.attrTooltip.map((key) => {
-        //   if (d.hasOwnProperty(key)) {
-        //     tooltipHtml += `<div><strong>${key}:</strong> ${d[key]}</div>`;
-        //   }
-        // });
-
-        // tooltip
-        //   .html(tooltipHtml)
-        //   .style("left", event.pageX + "px")
-        //   .style("top", event.pageY - 28 + "px")
-        //   .style("display", "block");
-        // d3.select(this)
-          // .transition()
-          // .style("display", "none")     
-      })
-      .on("mouseleave", function () {
-        // evento mouseleave adicionado
-        // console.log('saiu');
-        // d3.select(this).attr("opacity", 1);
-        // tooltip.transition().style("opacity", 0)
-        // .transition()
-        //       .style("opacity", 0)
-        //       .style("display", "none")
-      })
-      .on("click", function (d) {
-        const circle = d3.select(this);
-        const isSelected = circle.classed("selected");
-        if (isSelected) {
-          selected.splice(selected.indexOf(circle), 1);
-          circle.classed("selected", false);
-          circle.attr("stroke", "none").attr("opacity", 1);
-        } else {
-          selected.push(circle);
-          circle.classed("selected", true);
-          circle.attr("stroke", "red").attr("opacity", 1);
-        }
-      });
+    return this.dotGroup;
   }
+
 
   drawAxis(x, y) {
     const xAxis = d3.axisBottom(x).tickSize(-this.height + this.margin.bottom);
@@ -228,36 +150,19 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .call(yAxis);
   }
 
-  // drawAxislegend(x,y) {
-  //   const xAxis = d3.axisBottom(x);
-  //   const yAxis = d3.axisLeft(y);
-
-  //   this.forenground
-  //     .append("g")
-  //     .attr("class", "x-axis")
-  //     .attr("transform", `translate(${0},${this.height - (this.margin.bottom+this.margin.top)})`) // modificação aqui
-  //     .call(xAxis);
-
-  //   this.forenground
-  //     .append("g")
-  //     .attr("class", "y-axis")
-  //     .attr("transform", `translate(${this.margin.left},${0})`) // modificação aqui
-  //     .call(yAxis);
-  // }
-
   setTooltipLabels(titles) {
     this.attrTooltip = titles;
   }
 
-  // generateTooltipHtml(d, titles) {
-  //   let html = "";
-  //   for (const [key, value] of Object.entries(d)) {
-  //     if (titles.includes(key)) {
-  //       html += `<div><strong>${key}:</strong> ${value}</div>`;
-  //     }
-  //   }
-  //   return html;
-  // }
+  generateTooltipHtml(d, titles) {
+    let html = "";
+    for (const [key, value] of Object.entries(d)) {
+      if (titles.includes(key)) {
+        html += `<div><strong>${key}:</strong> ${value}</div>`;
+      }
+    }
+    return html;
+  }
 
   containForce(size, axis) {
     const strength = 0.1;
@@ -315,9 +220,5 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .append("g");
   }
 
-  showTooltip() {}
 
-  showLegend(value) {
-    this.settings.showLegend = value;
-  }
 }
