@@ -5,6 +5,7 @@
     "main": "./dist/cjs/el_beeswarm.min.js",
     "module": "./dist/esm/el_beeswarm.min.js",
     "type": "module",
+    "types": "index.d.ts",
     "exports": {
         "require": "./dist/cjs/el_beeswarm.min.js",
         "import": "./dist/esm/el_beeswarm.min.js"
