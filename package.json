@@ -1,6 +1,6 @@
 {
     "name": "el-beeswarm",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "description": "",
     "main": "./dist/cjs/el_beeswarm.min.js",
     "module": "./dist/esm/el_beeswarm.min.js",
@@ -19,10 +19,15 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/elvisthermo/el-beeswarm.git"
-      },
-      "keywords": ["beeswarm", "swarm", "bee","charts"],
-      "author": "Elvis Thermo",
-      "license": "GNU General Public License v3.0",
+    },
+    "keywords": [
+        "beeswarm",
+        "swarm",
+        "bee",
+        "charts"
+    ],
+    "author": "Elvis Thermo",
+    "license": "GNU General Public License v3.0",
     "dependencies": {
         "@babel/core": "^7.13.8",
         "@babel/preset-env": "^7.13.8",
