@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      // outras opções...
+    },
+    "include": [
+      "src/**/*",
+      "index.d.ts"
+    ]
+  }
+  
