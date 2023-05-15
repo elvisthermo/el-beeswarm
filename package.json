@@ -16,8 +16,13 @@
         "prepare": "run-s build copy-files",
         "copy-files": "copy README.md dist && copy LICENSE dist"
     },
-    "author": "",
-    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/elvisthermo/el-beeswarm.git"
+      },
+      "keywords": ["beeswarm", "swarm", "bee","charts"],
+      "author": "Elvis Thermo",
+      "license": "GNU General Public License v3.0",
     "dependencies": {
         "@babel/core": "^7.13.8",
         "@babel/preset-env": "^7.13.8",
