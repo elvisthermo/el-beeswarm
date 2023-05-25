@@ -8,7 +8,6 @@ export default class VisualizationAbstract {
   constructor(htmlElementId, width, height, settings) {
     this.parentElement = document.getElementById(htmlElementId);
     this.htmlBounds = this.parentElement.getBoundingClientRect();
-    this.data;
     this.settings = {
       color: "#069", //"grey",//"#069",
       highlightColor: settings.highlightColor ?? "red",
