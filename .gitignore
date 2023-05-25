@@ -3,3 +3,6 @@ documentation
 .idea
 *.log
 package-lock.json
+sonar-project.properties
+.scannerwork
+
