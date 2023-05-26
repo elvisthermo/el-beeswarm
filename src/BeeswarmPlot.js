@@ -95,11 +95,14 @@ export default class BeeswarmPlot extends VisualizationAbstract {
   drawDots(x, y) {
     // Criar a simulação de força
     const colorScheme = this.settings.colors ?? undefined;
-    const colors = this.setColor(
+    const { colors, categories } = this.setColor(
       this.settings.colorAttr,
       colorScheme,
       this.settings.interpolate,
     );
+    if (this.settings.showLegend) {
+      this.drawLegend(colors, categories);
+    }
 
     const scale = x ? x : y;
 

@@ -43,7 +43,7 @@
           ];
           console.log('interpolate color',d3.interpolateMagma)
 
-          // htmlElementId,data, xType, yType, xLabel, yLabel, radius, width, height
+          // // htmlElementId,data, xType, yType, xLabel, yLabel, radius, width, height
           beeswarm0 = new vis.BeeswarmPlot(
             "canvas0",
             dataset,
@@ -175,8 +175,8 @@
           beeswarm4 = new vis.BeeswarmGroup(
             "canvas4",
             dataset,
-            attr[0],
             attr[4],
+            attr[7],
             4,
             (this.settings = {
               color: "#069", //"grey",//"#069",
@@ -184,7 +184,7 @@
               opacity: 1,
               notSelectedOpacity: 0.15,
               size_type: "fit", //"absolute"
-              width: 800,
+              width: 900,
               height: 600,
               paddingTop: 25,
               paddingLeft: 50,
@@ -192,11 +192,13 @@
               paddingBottom: 30,
               autoresize: true,
               margin:{top: 10, right: 10, bottom: 60, left: 60 },
-              colorAttr: attr[3],
-              theme: "dark",
-              colors:['blue','pink',"green"],
+              colorAttr: attr[7],
+              theme: "light",
+              // colors:['blue','pink',"green","yellow"],
+              interpolate: d3.interpolateMagma,
               dotsType: 'circle',
-              forceSteps: 1000
+              forceSteps: 1000,
+              showLegend: true,
               // colors:['red','blue','pink',"green"]
             })
           );
@@ -228,6 +230,7 @@
               forceX: 5,
               forceY:2,
               dotsType: 'hex',
+              showLegend: true,
               // colors:['red','blue','pink',"green"]
             })
           );
@@ -235,28 +238,24 @@
           beeswarm5.draw()
 
           beeswarm5.dotGroup.on('mouseover',(d)=>{
-            // beeswarm5.setTooltip(d.target);
+            beeswarm5.setTooltip(d.target);
             beeswarm5.setHighlight(d.target);
 
           })
           beeswarm5.dotGroup.on('mouseout',(d)=>{
             beeswarm5.setRemoverHighlight(d.target);
-            // beeswarm5.setRemoveTooltip(d.target);
+            beeswarm5.setRemoveTooltip(d.target);
           })
           .on('click',(d)=>{
             beeswarm5.setSelected(d.target);
           })
 
-
-            //console.log("d:",d);
-          console.log(beeswarm5)
         }
         main();
       };
     </script>
     <div id="canvas0"></div>
     <div id="canvas1"></div>
-    <div id="legend"></div>
     <div id="canvas2"></div>
     <div id="canvas3"></div>
     <div id="canvas4"></div>
