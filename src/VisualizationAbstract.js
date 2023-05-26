@@ -102,10 +102,8 @@ export default class VisualizationAbstract {
     let schemeColor = colors ?? d3.schemeCategory10;
     const isNumber = isNaN(this.data[0][colorColumn]);
     let categories = [];
-    // Verifica se a coluna de cores é numérica ou categórica
     const isNumeric = typeof +this.data[0][colorColumn] === 'number';
     const isCategorical = typeof this.data[0][colorColumn] === 'string';
-    // Cria a escala de cores apropriada com base no tipo da coluna de cores
     if (isNumeric && !isNumber) {
       const interpolator = this.settings.colors
         ? this.createCustomInterpolator()
@@ -119,11 +117,9 @@ export default class VisualizationAbstract {
 
       colorScale = d3.scaleOrdinal().domain(categories).range(schemeColor);
     } else {
-      // Se a coluna de cores não for numérica nem categórica, retorna null
       console.warn('Invalid color column');
       colorScale = null;
     }
-    console.log('categories', categories);
     return { colors: colorScale, categories };
   }
 
@@ -167,7 +163,6 @@ export default class VisualizationAbstract {
         return d[this.settings.colorAttr];
       });
 
-      console.log(min, max);
       this.drawLegendContinuos(legendDiv, min, max);
     }
 
@@ -203,7 +198,6 @@ export default class VisualizationAbstract {
       .attr('y2', '0%');
 
     if (colorScale && !colors) {
-      console.log('caiu no sim');
       gradient
         .selectAll('stop')
         .data(d3.range(0, 1.01, 0.01))
@@ -216,8 +210,6 @@ export default class VisualizationAbstract {
           return colorScale(d * 100);
         });
     } else if (colors) {
-      console.log('caiu no não else if (colors)');
-
       gradient
 
         .selectAll('stop')
