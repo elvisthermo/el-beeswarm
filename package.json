@@ -4,7 +4,7 @@
     "description": "",
     "main": "./dist/cjs/el_beeswarm.min.js",
     "module": "./dist/esm/el_beeswarm.min.js",
-    "type": "commonjs",
+    "type": "module",
     "types": "src/typings/index.d.ts",
     "exports": {
         "require": "./dist/cjs/el_beeswarm.min.js",
@@ -18,7 +18,10 @@
         "build": "webpack --config webpack.config.prod.cjs --mode production",
         "prepare": "run-s build copy-files",
         "copy-files": "copy README.md dist && copy LICENSE dist",
-        "sonar": "node sonar-project.js"
+        "sonar": "node sonar-project.js",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write ."
     },
     "repository": {
         "type": "git",
@@ -45,6 +48,9 @@
     },
     "devDependencies": {
         "css-loader": "^6.7.3",
+        "eslint": "^8.41.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-prettier": "^4.2.1",
         "jasmine": "^5.0.0",
         "jsdoc": "^4.0.2",
         "karma": "^6.4.2",
@@ -53,6 +59,7 @@
         "karma-jasmine": "^5.1.0",
         "npm-run-all": "^4.1.5",
         "or": "^0.2.0",
+        "prettier": "^2.8.8",
         "style-loader": "^3.3.2",
         "ts-loader": "^9.4.2",
         "typescript": "^5.0.4",
