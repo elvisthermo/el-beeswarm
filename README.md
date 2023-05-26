@@ -12,7 +12,7 @@
             width: 250px;
             height: 250px;
             text-align: center;">
-  <img src="assets/logo/colmeia.svg" alt="Logo da lib el-beeswarm">
+  <img src="assets/logo/colmeia.svg" width="250" height="250" alt="Logo da lib el-beeswarm">
 
   <h1 style="color:#ffff00;font-weight: 900;">el-beeswarm </h1>
 </div>
