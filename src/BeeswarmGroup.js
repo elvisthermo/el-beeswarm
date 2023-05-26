@@ -97,8 +97,6 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     );
     // Adicionar os círculos
     if (this.settings.showLegend) {
-      console.log(colors);
-      console.log(categories);
       this.drawLegend(colors, categories);
     }
 
