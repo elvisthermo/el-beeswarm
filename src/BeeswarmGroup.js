@@ -95,7 +95,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       colorScheme,
       this.settings.interpolate,
     );
-    if (this.settings.showLegend) {
+    if (this.settings.showLegend && this.settings.colors) {
       this.drawLegend(colors, categories);
     }
 

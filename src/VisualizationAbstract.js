@@ -327,11 +327,15 @@ export default class VisualizationAbstract {
     const xGlobal = left + window.scrollX;
     const yGlobal = top + window.scrollY;
 
-    this.tooltip.transition().style('display', 'block').style('opacity', 0.9);
+    this.tooltip
+      .transition()
+      .style('display', 'block')
+      .transition(1000)
+      .style('opacity', 0.9);
     this.tooltip
       .html(element.getAttribute('title'))
       .style('left', xGlobal + 'px')
-      .style('top', yGlobal + 'px');
+      .style('top', yGlobal + 25 + 'px');
   }
 
   setRemoveTooltip(element) {
@@ -409,7 +413,9 @@ export default class VisualizationAbstract {
       .attr('d', hexagon(this.radius))
       .attr('transform', (d) => `translate(${d.x},${d.y})`)
       .attr('cursor', 'pointer')
-      .attr('fill', (d) => colors(d[this.settings.colorAttr]))
+      .attr('fill', (d) =>
+        !colors ? this.settings.color : colors(d[this.settings.colorAttr]),
+      )
       .attr('title', (d) => this.generateTooltipHtml(d, this.attrTooltip))
       .attr('cursor', 'pointer');
   }
@@ -425,7 +431,9 @@ export default class VisualizationAbstract {
       .attr('cx', (d) => d.x)
       .attr('cy', (d) => d.y)
       .attr('cursor', 'pointer')
-      .attr('fill', (d) => colors(d[this.settings.colorAttr]))
+      .attr('fill', (d) =>
+        !colors ? this.settings.color : colors(d[this.settings.colorAttr]),
+      )
       .attr('title', (d) => this.generateTooltipHtml(d, this.attrTooltip))
       .attr('cursor', 'pointer');
   }
