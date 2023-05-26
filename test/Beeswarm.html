@@ -49,8 +49,6 @@
             dataset,
             attr[7],
             5,
-            700,
-            400,
             (this.settings = {
               color: "#069", //"grey",//"#069",
               highlightColor: "#FF1122", //"#08E700",
@@ -84,8 +82,6 @@
             dataset,
             attr[7],
             5,
-            700,
-            400,
             (this.settings = {
               color: "#069", //"grey",//"#069",
               highlightColor: "#FF1122", //"#08E700",
@@ -118,8 +114,6 @@
             attr[4],
             attr[10],
             4,
-            800,
-            400,
             (this.settings = {
               color: "#069", //"grey",//"#069",
               highlightColor: "#FF1122", //"#08E700",
@@ -151,8 +145,6 @@
             attr[2],
             attr[4],
             5,
-            800,
-            400,
             (this.settings = {
               color: "#069", //"grey",//"#069",
               highlightColor: "#FF1122", //"#08E700",
@@ -186,8 +178,6 @@
             attr[0],
             attr[4],
             4,
-            800,
-            400,
             (this.settings = {
               color: "#069", //"grey",//"#069",
               highlightColor: "#FF1122", //"#08E700",
@@ -222,8 +212,6 @@
             attr[7],
             attr[4],
             10,
-            800,
-            800,
             (this.settings = {
               color: "#069", //"grey",//"#069",
               opacity: 1,
@@ -247,13 +235,13 @@
           beeswarm5.draw()
 
           beeswarm5.dotGroup.on('mouseover',(d)=>{
-            beeswarm5.setTooltip(d.target);
+            // beeswarm5.setTooltip(d.target);
             beeswarm5.setHighlight(d.target);
 
           })
           beeswarm5.dotGroup.on('mouseout',(d)=>{
             beeswarm5.setRemoverHighlight(d.target);
-            beeswarm5.setRemoveTooltip(d.target);
+            // beeswarm5.setRemoveTooltip(d.target);
           })
           .on('click',(d)=>{
             beeswarm5.setSelected(d.target);
