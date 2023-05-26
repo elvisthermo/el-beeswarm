@@ -140,15 +140,15 @@ export default class VisualizationAbstract {
       .attr('class', 'close-btn')
       .text('➖')
       .on('click', function () {
-        const legendDiv = d3.select('.legend-ul');
+        const legend = d3.select(d3.select(this).node().parentNode.parentNode);
         const icon = d3.select(this);
-        if (legendDiv.classed('collapsed')) {
+        if (legend.select('ul').classed('collapsed')) {
           // Expandir a div de legendas
-          legendDiv.classed('collapsed', false);
+          legend.select('ul').classed('collapsed', false);
           icon.text('➖');
         } else {
           // Encolher a div de legendas
-          legendDiv.classed('collapsed', true);
+          legend.select('ul').classed('collapsed', true);
           icon.text('➕');
         }
       });
@@ -322,12 +322,16 @@ export default class VisualizationAbstract {
     if (this.hideTooltipTimeout) {
       clearTimeout(this.hideTooltipTimeout);
     }
+    const { left, top } = element.getBoundingClientRect();
+
+    const xGlobal = left + window.scrollX;
+    const yGlobal = top + window.scrollY;
 
     this.tooltip.transition().style('display', 'block').style('opacity', 0.9);
     this.tooltip
       .html(element.getAttribute('title'))
-      .style('left', event.pageX + 'px')
-      .style('top', event.pageY - 28 + 'px');
+      .style('left', xGlobal + 'px')
+      .style('top', yGlobal + 'px');
   }
 
   setRemoveTooltip(element) {
