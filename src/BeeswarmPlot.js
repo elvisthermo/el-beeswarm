@@ -41,8 +41,6 @@ export default class BeeswarmPlot extends VisualizationAbstract {
         typeof +this.data[0][this.attr] === 'number' &&
         !isNaN(this.data[0][this.attr])
       ) {
-        // .range([0 + this.margin.left, this.width - this.margin.right]);
-        // x.domain(d3.extent(this.data, (d) => d[this.xLabel]))
         x = d3
           .scaleLinear()
           .range([0 + this.margin.left, this.width - this.margin.right]);
@@ -56,7 +54,6 @@ export default class BeeswarmPlot extends VisualizationAbstract {
     }
 
     if (this.orientation === 'y') {
-      // Definir a escala do eixo Y
       if (
         typeof this.data[0][this.attr] === 'string' &&
         isNaN(this.data[0][this.attr])
@@ -93,7 +90,6 @@ export default class BeeswarmPlot extends VisualizationAbstract {
   }
 
   drawDots(x, y) {
-    // Criar a simulação de força
     const colorScheme = this.settings.colors ?? undefined;
     const { colors, categories } = this.setColor(
       this.settings.colorAttr,
