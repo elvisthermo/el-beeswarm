@@ -1,33 +1,22 @@
-import VisualizationAbstract from "./VisualizationAbstract.js";
+import VisualizationAbstract from './VisualizationAbstract.js';
 
 export default class BeeswarmGroup extends VisualizationAbstract {
-  attrTooltip = [];
-  dotGroup;
-  constructor(
-    htmlElementId,
-    data,
-    xLabel,
-    yLabel,
-    radius,
-    width,
-    height,
-    settings
-  ) {
-    super(htmlElementId, width, height, settings);
+  constructor(htmlElementId, data, xLabel, yLabel, radius, settings) {
+    super(htmlElementId, settings.width, settings.height, settings);
     this.margin = settings.margin;
     this.element = htmlElementId;
     this.data = data;
     this.xLabel = xLabel;
     this.yLabel = yLabel;
     this.radius = radius || 5;
-    this.width = width;
-    this.height = height;
-    this.settings.dotsType = settings.dotsType ??"circle"; // circle/ hex
+    this.width = settings.width;
+    this.height = settings.height;
+    this.settings.dotsType = settings.dotsType ?? 'circle'; // circle/ hex
     this.settings.colorAttr = settings.colorAttr ?? undefined;
     this.settings.colors = settings.colors ?? undefined;
     this.settings.autoresize = settings.autoresize ?? true;
     this.settings.opacity = settings.opacity ?? 1;
-    this.settings.highlightColor = settings.highlightColor ?? "red";
+    this.settings.highlightColor = settings.highlightColor ?? 'red';
     this.settings.forceSteps = settings.forceSteps ?? 300;
     this.settings.forceX = settings.forceX ?? 3;
     this.settings.forceY = settings.forceY ?? 5;
@@ -37,14 +26,11 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     this.settings.showLegend = settings.showLegend ?? false;
   }
 
-  prepareData() {}
-
-  draw() {
-    super.draw();
+  prepareData() {
     var x, y;
 
     if (
-      typeof this.data[0][this.xLabel] === "string" &&
+      typeof this.data[0][this.xLabel] === 'string' &&
       isNaN(this.data[0][this.xLabel])
     ) {
       x = d3
@@ -53,7 +39,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
         .padding(1);
       x.domain(this.data.map((d) => d[this.xLabel]));
     } else if (
-      typeof +this.data[0][this.xLabel] === "number" &&
+      typeof +this.data[0][this.xLabel] === 'number' &&
       !isNaN(this.data[0][this.xLabel])
     ) {
       x = d3
@@ -68,7 +54,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     }
 
     if (
-      typeof this.data[0][this.yLabel] === "string" &&
+      typeof this.data[0][this.yLabel] === 'string' &&
       isNaN(this.data[0][this.yLabel])
     ) {
       y = d3
@@ -77,7 +63,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
         .padding(1);
       y.domain(this.data.map((d) => d[this.yLabel]));
     } else if (
-      typeof +this.data[0][this.yLabel] === "number" &&
+      typeof +this.data[0][this.yLabel] === 'number' &&
       !isNaN(this.data[0][this.yLabel])
     ) {
       const eixoY = this.data.map((d) => +d[this.yLabel]).sort((a, b) => a - b);
@@ -91,45 +77,44 @@ export default class BeeswarmGroup extends VisualizationAbstract {
         .range([this.height - this.margin.bottom, 0 + this.margin.top]);
       y.domain(d3.extent(this.data, (d) => moment(d[this.yLabel]).toDate()));
     }
+    return { x, y };
+  }
 
+  draw() {
+    super.draw();
+    const { x, y } = this.prepareData();
     this.drawContainer();
     this.drawDots(x, y);
     this.drawAxis(x, y);
   }
 
-  resize() {}
-
   drawDots(x, y) {
-    const self = this;
-
     const colorScheme = this.settings.colors ?? undefined;
-    const colors = this.setColor(
+    const { colors, categories } = this.setColor(
       this.settings.colorAttr,
       colorScheme,
-      this.settings.interpolate
+      this.settings.interpolate,
     );
-    // Adicionar os círculos
     if (this.settings.showLegend) {
-      this.drawLegend(colorScale, categories);
+      this.drawLegend(colors, categories);
     }
 
     const positionedData = this.calculateSwarmPlotPositions(
       this.data,
       x,
       y,
-      this.radius
+      this.radius,
     );
 
+    this.dotGroup = this.forenground.append('g').attr('class', 'dots');
 
-    this.dotGroup = this.forenground.append("g").attr("class", "dots");
-
-    this.dotGroup = this.settings.dotsType === 'circle' ? 
-    this.drawCircles(this.dotGroup, positionedData,colors): 
-    this.drawHex(this.dotGroup, positionedData,colors);
+    this.dotGroup =
+      this.settings.dotsType === 'circle'
+        ? this.drawCircles(this.dotGroup, positionedData, colors)
+        : this.drawHex(this.dotGroup, positionedData, colors);
 
     return this.dotGroup;
   }
-
 
   drawAxis(x, y) {
     const xAxis = d3.axisBottom(x).tickSize(-this.height + this.margin.bottom);
@@ -138,15 +123,15 @@ export default class BeeswarmGroup extends VisualizationAbstract {
       .tickSize(-this.width + this.margin.left + this.margin.right);
 
     this.axisX
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(0, ${this.height - this.margin.top})`) // Alterado aqui
+      .append('g')
+      .attr('class', 'x-axis')
+      .attr('transform', `translate(0, ${this.height - this.margin.top})`) // Alterado aqui
       .call(xAxis);
 
     this.axisY
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${this.margin.left}, 0)`) // Alterado aqui
+      .append('g')
+      .attr('class', 'y-axis')
+      .attr('transform', `translate(${this.margin.left}, 0)`) // Alterado aqui
       .call(yAxis);
   }
 
@@ -155,7 +140,7 @@ export default class BeeswarmGroup extends VisualizationAbstract {
   }
 
   generateTooltipHtml(d, titles) {
-    let html = "";
+    let html = '';
     for (const [key, value] of Object.entries(d)) {
       if (titles.includes(key)) {
         html += `<div><strong>${key}:</strong> ${value}</div>`;
@@ -181,27 +166,27 @@ export default class BeeswarmGroup extends VisualizationAbstract {
   calculateSwarmPlotPositions(data, xScale, yScale, radius) {
     const positionedData = data.map((d) => ({ ...d }));
     const sortedData = positionedData.sort(
-      (a, b) => xScale(a[this.xLabel]) - xScale(b[this.xLabel])
+      (a, b) => xScale(a[this.xLabel]) - xScale(b[this.xLabel]),
     );
 
     const simulation = d3
       .forceSimulation(sortedData)
       .force(
-        "x",
-        d3.forceX((d) => xScale(d[this.xLabel])).strength(this.settings.forceX)
+        'x',
+        d3.forceX((d) => xScale(d[this.xLabel])).strength(this.settings.forceX),
       )
       .force(
-        "y",
-        d3.forceY((d) => yScale(d[this.yLabel])).strength(this.settings.forceY)
+        'y',
+        d3.forceY((d) => yScale(d[this.yLabel])).strength(this.settings.forceY),
       )
-      .force("collide", d3.forceCollide(this.radius + 1).strength(1))
-      .force("containX", this.containForce(this.width - this.margin.left, "x"))
+      .force('collide', d3.forceCollide(this.radius + 1).strength(1))
+      .force('containX', this.containForce(this.width - this.margin.left, 'x'))
       .force(
-        "containY",
+        'containY',
         this.containForce(
           this.height - (this.margin.top + this.margin.bottom),
-          "y"
-        )
+          'y',
+        ),
       )
       .stop();
 
@@ -214,11 +199,9 @@ export default class BeeswarmGroup extends VisualizationAbstract {
 
   drawContainer() {
     this.forenground = this.forenground
-      .append("g")
-      .attr("width", -this.width - this.margin.left)
-      .attr("height", this.height - this.margin.top)
-      .append("g");
+      .append('g')
+      .attr('width', -this.width - this.margin.left)
+      .attr('height', this.height - this.margin.top)
+      .append('g');
   }
-
-
 }

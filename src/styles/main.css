@@ -57,6 +57,15 @@
   color:var(--font-color);
 }
 
+.plot {
+  background-color: var(--card-bg-color);
+  border: 1px solid var(--card-border-color);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
 .view-container {
   background-color: var(--card-bg-color);
   border: 1px solid var(--card-border-color);
@@ -95,19 +104,22 @@
 }
 
 div.legend-container{
+  border: 1px solid var(--card-border-color);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 20%;
   height: auto;
-  background-color: var(--card-bg-color);
+  background-color: var(--card-bg-color); 
   margin: 5px;
   padding: 5px;
   border-radius: 10px; 
-  color: var(--font-color)
+  color: var(--font-color);
 }
 
 ul.legend-ul{
-  height: 280px;
+  max-height: 180px;
   overflow: auto;
-  /* margin: 0px 0px 0px 5px; */
 }
 
 ul.legend-ul::-webkit-scrollbar {

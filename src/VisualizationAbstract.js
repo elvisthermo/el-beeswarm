@@ -1,5 +1,5 @@
-import * as d3 from "d3";
-import "./styles/main.css";
+import * as d3 from 'd3';
+import './styles/main.css';
 export default class VisualizationAbstract {
   /**
    *
@@ -8,13 +8,12 @@ export default class VisualizationAbstract {
   constructor(htmlElementId, width, height, settings) {
     this.parentElement = document.getElementById(htmlElementId);
     this.htmlBounds = this.parentElement.getBoundingClientRect();
-    this.data;
     this.settings = {
-      color: "#069", //"grey",//"#069",
-      highlightColor: settings.highlightColor ?? "red",
+      color: '#069', //"grey",//"#069",
+      highlightColor: settings.highlightColor ?? 'red',
       opacity: 1,
       notSelectedOpacity: 0.15,
-      size_type: "fit", //"absolute"
+      size_type: 'fit', //"absolute"
       width: 700,
       height: 300,
       paddingTop: 25,
@@ -22,20 +21,22 @@ export default class VisualizationAbstract {
       paddingRight: 50,
       paddingBottom: 30,
       autoresize: true,
-      colorAttr: "",
+      colorAttr: '',
       interpolate: settings.interpolate ?? d3.interpolateBlues,
       theme: settings.theme, //light or dark
       showLegend: settings.showLegend ?? false,
-      colors: ["#FF1122"],
+      colors: ['#FF1122'],
     };
+    this.hideTooltipTimeout = undefined;
 
     // converter width "100%"" e height "100vh" em numerico
     this.config = {
       width: width ? width : 500,
       height: height ? height : 500,
-      color: "#23a88e",
+      color: '#23a88e',
     };
 
+    this.attrTooltip = [];
     this.selected = [];
     this.margin = settings.margin;
     this.padding = {
@@ -47,26 +48,27 @@ export default class VisualizationAbstract {
 
     this.svg = d3
       .select(this.parentElement)
-      .append("svg")
-      .attr("class", `${this.settings.theme}-theme view-container`)
-      .attr("width", this.config.width)
-      .attr("height", this.config.height);
+      .attr('class', `${this.settings.theme}-theme plot`)
+      .append('svg')
+      .attr('class', `${this.settings.theme}-theme view-container`)
+      .attr('width', this.config.width)
+      .attr('height', this.config.height);
 
-    this.background = this.svg.append("g").attr("class", "layer-backgound");
+    this.background = this.svg.append('g').attr('class', 'layer-backgound');
 
-    this.axisX = this.background.append("g").attr("class", "layer-axisX");
+    this.axisX = this.background.append('g').attr('class', 'layer-axisX');
 
-    this.axisY = this.background.append("g").attr("class", "layer-axisY");
+    this.axisY = this.background.append('g').attr('class', 'layer-axisY');
 
-    this.forenground = this.svg.append("g").attr("class", "layer-forenground");
+    this.forenground = this.svg.append('g').attr('class', 'layer-forenground');
 
-    this.highlight = this.svg.append("g").attr("class", "layer-highlight");
+    this.highlight = this.svg.append('g').attr('class', 'layer-highlight');
 
     this.tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
+      .select('body')
+      .append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0);
   }
 
   /**
@@ -87,7 +89,9 @@ export default class VisualizationAbstract {
   /**
    * @description - função de redimencionar
    */
-  resize() {}
+  resize() {
+    this.draw();
+  }
 
   /**
    * @param {*} attribute
@@ -97,10 +101,9 @@ export default class VisualizationAbstract {
     let colorScale;
     let schemeColor = colors ?? d3.schemeCategory10;
     const isNumber = isNaN(this.data[0][colorColumn]);
-    // Verifica se a coluna de cores é numérica ou categórica
-    const isNumeric = typeof +this.data[0][colorColumn] === "number";
-    const isCategorical = typeof this.data[0][colorColumn] === "string";
-    // Cria a escala de cores apropriada com base no tipo da coluna de cores
+    let categories = [];
+    const isNumeric = typeof +this.data[0][colorColumn] === 'number';
+    const isCategorical = typeof this.data[0][colorColumn] === 'string';
     if (isNumeric && !isNumber) {
       const interpolator = this.settings.colors
         ? this.createCustomInterpolator()
@@ -110,18 +113,14 @@ export default class VisualizationAbstract {
         .domain(d3.extent(this.data, (d) => d[colorColumn]))
         .interpolator(interpolator);
     } else if (isCategorical && isNumber) {
-      const categories = Array.from(
-        new Set(this.data.map((d) => d[colorColumn]))
-      );
+      categories = Array.from(new Set(this.data.map((d) => d[colorColumn])));
 
       colorScale = d3.scaleOrdinal().domain(categories).range(schemeColor);
     } else {
-      // Se a coluna de cores não for numérica nem categórica, retorna null
-      console.warn("Invalid color column");
+      console.warn('Invalid color column');
       colorScale = null;
     }
-
-    return colorScale;
+    return { colors: colorScale, categories };
   }
 
   createCustomInterpolator() {
@@ -129,78 +128,101 @@ export default class VisualizationAbstract {
   }
 
   drawLegend(colors, categories) {
-    const legend = d3.select("#legend");
-    // Adiciona botão para fechar a div de legendas
+    const legendDiv = d3
+      .select(this.parentElement)
+      .insert('div')
+      .attr('class', `legend-container ${this.settings.theme}-theme`);
 
-    const legendDiv = legend
-      .append("div")
-      .attr("class", "legend-container dark-theme");
-
-    const legendHeader = legendDiv
-      .append("div")
-      .attr("class", "legend-header")
-      .append("button")
-      .attr("class", "close-btn")
-      .text("➖")
-      .on("click", function () {
-        const legendDiv = d3.select(".legend-ul");
+    legendDiv
+      .append('div')
+      .attr('class', 'legend-header')
+      .append('button')
+      .attr('class', 'close-btn')
+      .text('➖')
+      .on('click', function () {
+        const legend = d3.select(d3.select(this).node().parentNode.parentNode);
         const icon = d3.select(this);
-        if (legendDiv.classed("collapsed")) {
+        if (legend.select('ul').classed('collapsed')) {
           // Expandir a div de legendas
-          legendDiv.classed("collapsed", false);
-          icon.text("➖");
+          legend.select('ul').classed('collapsed', false);
+          icon.text('➖');
         } else {
           // Encolher a div de legendas
-          legendDiv.classed("collapsed", true);
-          icon.text("➕");
+          legend.select('ul').classed('collapsed', true);
+          icon.text('➕');
         }
       });
 
-    if (categories) {
+    if (categories.length > 0) {
       this.drawLegendCategorical(legendDiv, colors, categories);
-    } else if (this.settings.colors) {
-      this.drawLegendContinuos(legendDiv, 0, 3500, colors);
+    } else {
+      const min = d3.min(this.data, (d) => {
+        return d[this.settings.colorAttr];
+      });
+      const max = d3.max(this.data, (d) => {
+        return d[this.settings.colorAttr];
+      });
+
+      this.drawLegendContinuos(legendDiv, min, max);
     }
 
-    legendDiv.classed("collapsed", false);
+    legendDiv.classed('collapsed', false);
   }
 
-  drawLegendContinuos(minValue, maxValue, colorRange) {
+  drawLegendContinuos(legendDiv, minValue, maxValue) {
+    const colorText = this.settings.theme === 'dark' ? 'white' : 'black';
+    const colorScale = d3
+      .scaleSequential(this.settings.interpolate)
+      .domain([0, 100]);
+
     const colors = this.settings.colors;
 
-    const container = d3.select(".legend-container");
-
-    container.selectAll("svg").remove(); // Limpar qualquer conteúdo anterior no container
-    const togleContainer = container.append("ul").attr("class", "legend-ul");
+    const container = legendDiv;
+    const togleContainer = container.append('ul').attr('class', 'legend-ul');
     const svg = togleContainer
-      .append("svg")
-      .attr("width", 200)
-      .attr("height", 40);
+      .append('svg')
+      .attr('width', 200)
+      .attr('height', 40);
 
     const width = 200;
     const height = 100;
 
-    const defs = svg.append("defs");
+    const defs = svg.append('defs');
 
     const gradient = defs
-      .append("linearGradient")
-      .attr("id", "gradient")
-      .attr("x1", "0%")
-      .attr("y1", "0%")
-      .attr("x2", "100%")
-      .attr("y2", "0%");
+      .append('linearGradient')
+      .attr('id', 'gradient')
+      .attr('x1', '0%')
+      .attr('y1', '0%')
+      .attr('x2', '100%')
+      .attr('y2', '0%');
 
-    gradient
-      .selectAll("stop")
-      .data(colors)
-      .enter()
-      .append("stop")
-      .attr("offset", function (d, i) {
-        return (i / (colors.length - 1)) * 100 + "%";
-      })
-      .attr("stop-color", function (d) {
-        return d;
-      });
+    if (colorScale && !colors) {
+      gradient
+        .selectAll('stop')
+        .data(d3.range(0, 1.01, 0.01))
+        .enter()
+        .append('stop')
+        .attr('offset', function (d) {
+          return d * 100 + '%';
+        })
+        .attr('stop-color', function (d) {
+          return colorScale(d * 100);
+        });
+    } else if (colors) {
+      gradient
+
+        .selectAll('stop')
+        .data(colors)
+        .enter()
+        .append('stop')
+        .attr('offset', function (d, i) {
+          return (i / (colors.length - 1)) * 100 + '%';
+        })
+        .attr('stop-color', function (d) {
+          return d;
+        });
+    }
 
     const rectWidth = width * 0.6;
     const rectHeight = height * 0.1;
@@ -208,84 +230,86 @@ export default class VisualizationAbstract {
     const rectY = height * 0.9 - rectHeight / 2;
 
     const rect = svg
-      .append("rect")
-      .attr("width", rectWidth)
-      .attr("height", 20)
-      .attr("x", 20)
-      .attr("y", 0)
-      .attr("fill", "url(#gradient)");
+      .append('rect')
+      .attr('width', rectWidth)
+      .attr('height', 20)
+      .attr('x', 40)
+      .attr('y', 0)
+      .attr('fill', 'url(#gradient)');
 
     const minValueText = svg
-      .append("text")
-      .text(0)
-      .attr("x", rectX - 5)
-      .attr("y", 30)
-      .style("text-anchor", "end")
-      .style("dominant-baseline", "central");
+      .append('text')
+      .text(minValue)
+      .attr('x', rectX - 5)
+      .attr('y', 30)
+      .style('text-anchor', 'end')
+      .style('fill', colorText)
+      .style('dominant-baseline', 'central');
 
     const maxValueText = svg
-      .append("text")
-      .text(100)
-      .attr("x", rectX + rectWidth + 5)
-      .attr("y", 30)
-      .style("text-anchor", "start")
-      .style("dominant-baseline", "central");
+      .append('text')
+      .text(maxValue)
+      .attr('x', rectX + rectWidth + 5)
+      .attr('y', 30)
+      .style('text-anchor', 'start')
+      .style('fill', colorText)
+      .style('dominant-baseline', 'central');
   }
 
   drawLegendCategorical(legendDiv, colors, categories) {
     const legendItems = legendDiv
-      .append("ul")
-      .attr("class", "legend-ul")
-      .selectAll("li")
+      .append('ul')
+      .attr('class', 'legend-ul')
+      .selectAll('li')
       .data(categories)
       .enter()
-      .append("li");
+      .append('li');
 
     legendItems
-      .append("div")
-      .style("width", "20px")
-      .style("height", "20px")
-      .style("border-radius", "50%")
-      .style("background-color", (d, i) => colors(d));
+      .append('div')
+      .style('width', '20px')
+      .style('height', '20px')
+      .style('border-radius', '50%')
+      .style('background-color', (d, i) => colors(d));
 
     legendItems
-      .append("div")
-      .attr("class", "legend-text")
+      .append('div')
+      .attr('class', 'legend-text')
       .text((d) => d);
   }
 
   setHighlight(element) {
     d3.select(element)
-      .attr("stroke", this.settings.highlightColor)
-      .attr("opacity", 0.5);
+      .attr('stroke', this.settings.highlightColor)
+      .attr('opacity', 0.5);
   }
 
   setRemoverHighlight(element) {
     const dots = d3.select(element);
 
-    const isSelected = dots.classed("selected");
+    const isSelected = dots.classed('selected');
     if (isSelected) {
-      return d3.select(element).attr("opacity", 1);
+      return d3.select(element).attr('opacity', 1);
     }
-    return d3.select(element).attr("stroke", "none").attr("opacity", 1);
+    return d3.select(element).attr('stroke', 'none').attr('opacity', 1);
   }
 
   setSelected(element) {
     const dots = d3.select(element);
-    const isSelected = dots.classed("selected");
+    const isSelected = dots.classed('selected');
     if (isSelected) {
       this.selected.splice(this.selected.indexOf(dots), 1);
-      dots.classed("selected", false);
-      dots.attr("stroke", "none").attr("opacity", 1);
+      dots.classed('selected', false);
+      dots.attr('stroke', 'none').attr('opacity', 1);
     } else {
       this.selected.push(dots);
-      dots.classed("selected", true);
-      dots.attr("stroke", this.settings.highlightColor).attr("opacity", 1);
+      dots.classed('selected', true);
+      dots.attr('stroke', this.settings.highlightColor).attr('opacity', 1);
     }
   }
 
   generateTooltipHtml(d, titles) {
-    let html = "";
+    let html = '';
     for (const [key, value] of Object.entries(d)) {
       if (titles.includes(key)) {
         html += `<div><strong>${key}:</strong> ${value}</div>`;
@@ -294,23 +318,25 @@ export default class VisualizationAbstract {
     return html;
   }
 
-  hideTooltipTimeout;
-
   setTooltip(element) {
     if (this.hideTooltipTimeout) {
       clearTimeout(this.hideTooltipTimeout);
     }
+    const { left, top } = element.getBoundingClientRect();
 
-    this.tooltip.transition().style("display", "block").style("opacity", 0.9);
+    const xGlobal = left + window.scrollX;
+    const yGlobal = top + window.scrollY;
+
+    this.tooltip.transition().style('display', 'block').style('opacity', 0.9);
     this.tooltip
-      .html(element.getAttribute("title"))
-      .style("left", event.pageX + "px")
-      .style("top", event.pageY - 28 + "px");
+      .html(element.getAttribute('title'))
+      .style('left', xGlobal + 'px')
+      .style('top', yGlobal + 'px');
   }
 
   setRemoveTooltip(element) {
     this.hideTooltipTimeout = setTimeout(() => {
-      this.tooltip.style("display", "none").style("opacity", 0);
+      this.tooltip.style('display', 'none').style('opacity', 0);
     }, 1000); // 200 milissegundos de atraso
   }
 
@@ -323,13 +349,13 @@ export default class VisualizationAbstract {
    */
   drawContainer() {
     this.forenground
-      .select(".layer-forenground")
-      .attr("width", this.width + this.margin.left + this.margin.right)
-      .attr("height", this.height + this.margin.top + this.margin.bottom)
-      .append("g")
+      .select('.layer-forenground')
+      .attr('width', this.width + this.margin.left + this.margin.right)
+      .attr('height', this.height + this.margin.top + this.margin.bottom)
+      .append('g')
       .attr(
-        "transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")"
+        'transform',
+        'translate(' + this.margin.left + ',' + this.margin.top + ')',
       );
   }
 
@@ -343,15 +369,15 @@ export default class VisualizationAbstract {
     const yAxis = d3.axisLeft(y);
 
     this.forenground
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(${0},${this.height - this.margin.top}))`)
+      .append('g')
+      .attr('class', 'x-axis')
+      .attr('transform', `translate(${0},${this.height - this.margin.top}))`)
       .call(xAxis);
 
     this.forenground
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${0},${0}))`)
+      .append('g')
+      .attr('class', 'y-axis')
+      .attr('transform', `translate(${0},${0}))`)
       .call(yAxis);
   }
 
@@ -360,7 +386,7 @@ export default class VisualizationAbstract {
       const x = 0;
       const y = 0;
       const angles = [0, 60, 120, 180, 240, 300, 360].map(
-        (a) => (a * Math.PI) / 180
+        (a) => (a * Math.PI) / 180,
       );
       const points = angles.map((angle) => [
         x + radius * Math.cos(angle),
@@ -369,38 +395,38 @@ export default class VisualizationAbstract {
 
       return points
         .map((point, i) =>
-          i === 0 ? `M${point[0]},${point[1]}` : `L${point[0]},${point[1]}`
+          i === 0 ? `M${point[0]},${point[1]}` : `L${point[0]},${point[1]}`,
         )
-        .join("");
+        .join('');
     };
 
     return element
-      .selectAll(".dot")
+      .selectAll('.dot')
       .data(positionedData)
       .enter()
-      .append("path")
-      .attr("class", "dot")
-      .attr("d", hexagon(this.radius))
-      .attr("transform", (d) => `translate(${d.x},${d.y})`)
-      .attr("cursor", "pointer")
-      .attr("fill", (d) => colors(d[this.settings.colorAttr]))
-      .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
-      .attr("cursor", "pointer");
+      .append('path')
+      .attr('class', 'dot')
+      .attr('d', hexagon(this.radius))
+      .attr('transform', (d) => `translate(${d.x},${d.y})`)
+      .attr('cursor', 'pointer')
+      .attr('fill', (d) => colors(d[this.settings.colorAttr]))
+      .attr('title', (d) => this.generateTooltipHtml(d, this.attrTooltip))
+      .attr('cursor', 'pointer');
   }
 
   drawCircles(element, positionedData, colors) {
     return element
-      .selectAll(".dot")
+      .selectAll('.dot')
       .data(positionedData)
       .enter()
-      .append("circle")
-      .attr("class", "dot")
-      .attr("r", this.radius)
-      .attr("cx", (d) => d.x)
-      .attr("cy", (d) => d.y)
-      .attr("cursor", "pointer")
-      .attr("fill", (d) => colors(d[this.settings.colorAttr]))
-      .attr("title", (d) => this.generateTooltipHtml(d, this.attrTooltip))
-      .attr("cursor", "pointer");
+      .append('circle')
+      .attr('class', 'dot')
+      .attr('r', this.radius)
+      .attr('cx', (d) => d.x)
+      .attr('cy', (d) => d.y)
+      .attr('cursor', 'pointer')
+      .attr('fill', (d) => colors(d[this.settings.colorAttr]))
+      .attr('title', (d) => this.generateTooltipHtml(d, this.attrTooltip))
+      .attr('cursor', 'pointer');
   }
 }
