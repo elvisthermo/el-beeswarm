@@ -90,14 +90,16 @@ export default class BeeswarmGroup extends VisualizationAbstract {
 
   drawDots(x, y) {
     const colorScheme = this.settings.colors ?? undefined;
-    const colors = this.setColor(
+    const { colors, categories } = this.setColor(
       this.settings.colorAttr,
       colorScheme,
       this.settings.interpolate,
     );
     // Adicionar os círculos
     if (this.settings.showLegend) {
-      this.drawLegend(colorScale, categories);
+      console.log(colors);
+      console.log(categories);
+      this.drawLegend(colors, categories);
     }
 
     const positionedData = this.calculateSwarmPlotPositions(

@@ -48,6 +48,7 @@ export default class VisualizationAbstract {
 
     this.svg = d3
       .select(this.parentElement)
+      .attr('class', `${this.settings.theme}-theme plot`)
       .append('svg')
       .attr('class', `${this.settings.theme}-theme view-container`)
       .attr('width', this.config.width)
@@ -100,6 +101,7 @@ export default class VisualizationAbstract {
     let colorScale;
     let schemeColor = colors ?? d3.schemeCategory10;
     const isNumber = isNaN(this.data[0][colorColumn]);
+    let categories = [];
     // Verifica se a coluna de cores é numérica ou categórica
     const isNumeric = typeof +this.data[0][colorColumn] === 'number';
     const isCategorical = typeof this.data[0][colorColumn] === 'string';
@@ -113,9 +115,7 @@ export default class VisualizationAbstract {
         .domain(d3.extent(this.data, (d) => d[colorColumn]))
         .interpolator(interpolator);
     } else if (isCategorical && isNumber) {
-      const categories = Array.from(
-        new Set(this.data.map((d) => d[colorColumn])),
-      );
+      categories = Array.from(new Set(this.data.map((d) => d[colorColumn])));
 
       colorScale = d3.scaleOrdinal().domain(categories).range(schemeColor);
     } else {
@@ -123,8 +123,8 @@ export default class VisualizationAbstract {
       console.warn('Invalid color column');
       colorScale = null;
     }
-
-    return colorScale;
+    console.log('categories', categories);
+    return { colors: colorScale, categories };
   }
 
   createCustomInterpolator() {
@@ -132,14 +132,12 @@ export default class VisualizationAbstract {
   }
 
   drawLegend(colors, categories) {
-    const legend = d3.select('#legend');
-    // Adiciona botão para fechar a div de legendas
+    const legendDiv = d3
+      .select(this.parentElement)
+      .insert('div')
+      .attr('class', `legend-container ${this.settings.theme}-theme`);
 
-    const legendDiv = legend
-      .append('div')
-      .attr('class', 'legend-container dark-theme');
-
-    const legendHeader = legendDiv
+    legendDiv
       .append('div')
       .attr('class', 'legend-header')
       .append('button')
@@ -159,21 +157,32 @@ export default class VisualizationAbstract {
         }
       });
 
-    if (categories) {
+    if (categories.length > 0) {
       this.drawLegendCategorical(legendDiv, colors, categories);
-    } else if (this.settings.colors) {
-      this.drawLegendContinuos(legendDiv, 0, 3500, colors);
+    } else {
+      const min = d3.min(this.data, (d) => {
+        return d[this.settings.colorAttr];
+      });
+      const max = d3.max(this.data, (d) => {
+        return d[this.settings.colorAttr];
+      });
+
+      console.log(min, max);
+      this.drawLegendContinuos(legendDiv, min, max);
     }
 
     legendDiv.classed('collapsed', false);
   }
 
-  drawLegendContinuos(minValue, maxValue, colorRange) {
+  drawLegendContinuos(legendDiv, minValue, maxValue) {
+    const colorText = this.settings.theme === 'dark' ? 'white' : 'black';
+    const colorScale = d3
+      .scaleSequential(this.settings.interpolate)
+      .domain([0, 100]);
+
     const colors = this.settings.colors;
 
-    const container = d3.select('.legend-container');
-
-    container.selectAll('svg').remove(); // Limpar qualquer conteúdo anterior no container
+    const container = legendDiv;
     const togleContainer = container.append('ul').attr('class', 'legend-ul');
     const svg = togleContainer
       .append('svg')
@@ -193,17 +202,35 @@ export default class VisualizationAbstract {
       .attr('x2', '100%')
       .attr('y2', '0%');
 
-    gradient
-      .selectAll('stop')
-      .data(colors)
-      .enter()
-      .append('stop')
-      .attr('offset', function (d, i) {
-        return (i / (colors.length - 1)) * 100 + '%';
-      })
-      .attr('stop-color', function (d) {
-        return d;
-      });
+    if (colorScale && !colors) {
+      console.log('caiu no sim');
+      gradient
+        .selectAll('stop')
+        .data(d3.range(0, 1.01, 0.01))
+        .enter()
+        .append('stop')
+        .attr('offset', function (d) {
+          return d * 100 + '%';
+        })
+        .attr('stop-color', function (d) {
+          return colorScale(d * 100);
+        });
+    } else if (colors) {
+      console.log('caiu no não else if (colors)');
+
+      gradient
+
+        .selectAll('stop')
+        .data(colors)
+        .enter()
+        .append('stop')
+        .attr('offset', function (d, i) {
+          return (i / (colors.length - 1)) * 100 + '%';
+        })
+        .attr('stop-color', function (d) {
+          return d;
+        });
+    }
 
     const rectWidth = width * 0.6;
     const rectHeight = height * 0.1;
@@ -214,24 +241,26 @@ export default class VisualizationAbstract {
       .append('rect')
       .attr('width', rectWidth)
       .attr('height', 20)
-      .attr('x', 20)
+      .attr('x', 40)
       .attr('y', 0)
       .attr('fill', 'url(#gradient)');
 
     const minValueText = svg
       .append('text')
-      .text(0)
+      .text(minValue)
       .attr('x', rectX - 5)
       .attr('y', 30)
       .style('text-anchor', 'end')
+      .style('fill', colorText)
       .style('dominant-baseline', 'central');
 
     const maxValueText = svg
       .append('text')
-      .text(100)
+      .text(maxValue)
       .attr('x', rectX + rectWidth + 5)
       .attr('y', 30)
       .style('text-anchor', 'start')
+      .style('fill', colorText)
       .style('dominant-baseline', 'central');
   }
 
