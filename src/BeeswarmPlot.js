@@ -96,7 +96,7 @@ export default class BeeswarmPlot extends VisualizationAbstract {
       colorScheme,
       this.settings.interpolate,
     );
-    if (this.settings.showLegend) {
+    if (this.settings.showLegend && this.settings.colors) {
       this.drawLegend(colors, categories);
     }
 
@@ -162,7 +162,9 @@ export default class BeeswarmPlot extends VisualizationAbstract {
         (d) => `translate(${d[positions[0]]},${d[positions[1]]})`,
       )
       .attr('cursor', 'pointer')
-      .attr('fill', (d) => colors(d[this.settings.colorAttr]))
+      .attr('fill', (d) =>
+        !colors ? this.settings.color : colors(d[this.settings.colorAttr]),
+      )
       .attr('title', (d) => this.generateTooltipHtml(d, this.attrTooltip))
       .attr('cursor', 'pointer');
   }
@@ -178,7 +180,9 @@ export default class BeeswarmPlot extends VisualizationAbstract {
       .attr('cx', (d) => d[positions[0]])
       .attr('cy', (d) => d[positions[1]])
       .attr('cursor', 'pointer')
-      .attr('fill', (d) => colors(d[this.settings.colorAttr]))
+      .attr('fill', (d) =>
+        !colors ? this.settings.color : colors(d[this.settings.colorAttr]),
+      )
       .attr('title', (d) => this.generateTooltipHtml(d, this.attrTooltip))
       .attr('cursor', 'pointer');
   }
