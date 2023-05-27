@@ -22,7 +22,8 @@
         "sonar": "node sonar-project.js",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "docs": "jsdoc -c jsdoc.json"
     },
     "repository": {
         "type": "git",

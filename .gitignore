@@ -5,4 +5,5 @@ documentation
 package-lock.json
 sonar-project.properties
 .scannerwork
-
+dist
+docs
