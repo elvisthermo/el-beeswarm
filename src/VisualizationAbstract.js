@@ -9,7 +9,7 @@ export default class VisualizationAbstract {
     this.parentElement = document.getElementById(htmlElementId);
     this.htmlBounds = this.parentElement.getBoundingClientRect();
     this.settings = {
-      color: '#069', //"grey",//"#069",
+      color: settings.color ?? '#069', //"grey",//"#069",
       highlightColor: settings.highlightColor ?? 'red',
       opacity: 1,
       notSelectedOpacity: 0.15,
