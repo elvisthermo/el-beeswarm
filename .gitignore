@@ -7,3 +7,4 @@ sonar-project.properties
 .scannerwork
 dist
 docs
+coverage

@@ -31,3 +31,5 @@
 sonar-project.properties
 .scannerwork
 docs
+coverage
+src

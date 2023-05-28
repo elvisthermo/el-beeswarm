@@ -1,7 +1,7 @@
 import VisualizationAbstract from './VisualizationAbstract.js';
 
 export default class BeeswarmDimensions extends VisualizationAbstract {
-  constructor(htmlElementId, data, xLabel, yLabel, radius, settings) {
+  constructor(htmlElementId, data, xLabel, yLabel, radius, settings = {}) {
     super(htmlElementId, settings.width, settings.height);
     this.margin = { top: 30, right: 10, bottom: 60, left: 60 };
     this.element = htmlElementId;
