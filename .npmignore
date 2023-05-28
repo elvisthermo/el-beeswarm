@@ -1,0 +1,35 @@
+# Diretórios e arquivos de dependências
+/node_modules
+/package-lock.json
+/yarn.lock
+
+# Diretórios e arquivos de controle de versão
+/.git
+/.github
+/.gitignore
+
+# Diretórios e arquivos de teste
+/test
+/__tests__
+/__mocks__
+
+# Arquivos de logs
+/npm-debug.log
+/yarn-error.log
+
+# Diretórios e arquivos de build
+/.next
+/.out
+/.cache
+
+# Outros arquivos e diretórios comuns
+/.idea
+*.log
+.DS_Store
+*.bak
+*.swp
+sonar-project.properties
+.scannerwork
+docs
+coverage
+src

@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 import VisualizationAbstract from './VisualizationAbstract.js';
 
 export default class BeeswarmPlot extends VisualizationAbstract {

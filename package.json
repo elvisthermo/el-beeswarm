@@ -17,7 +17,7 @@
         "start": "webpack serve --config webpack.config.dev.cjs --mode development",
         "build": "webpack --config webpack.config.prod.cjs --mode production",
         "prepare": "run-s build copy-files",
-        "test": "karma start --coverage  --watch=false --sourceMap=true --codeCoverage=true",
+        "test": "jest --coverage",
         "copy-files": "copy README.md dist && copy LICENSE dist",
         "sonar": "node sonar-project.js",
         "lint": "eslint .",
@@ -37,8 +37,6 @@
     "author": "Elvis Thermo",
     "license": "GNU General Public License v3.0",
     "dependencies": {
-        "@babel/core": "^7.13.8",
-        "@babel/preset-env": "^7.13.8",
         "@babel/preset-react": "^7.12.13",
         "babel-loader": "^8.2.2",
         "d3": "^7.8.4",
@@ -48,6 +46,9 @@
         "sonarqube-scanner": "^3.0.1"
     },
     "devDependencies": {
+        "@babel/core": "^7.22.1",
+        "@babel/preset-env": "^7.22.2",
+        "babel-jest": "^29.5.0",
         "css-loader": "^6.7.3",
         "eslint": "^8.41.0",
         "eslint-config-prettier": "^8.8.0",
@@ -55,6 +56,8 @@
         "esm": "^3.2.25",
         "jasmine": "^5.0.0",
         "jasmine-core": "^5.0.0",
+        "jest": "^29.5.0",
+        "jest-environment-jsdom": "^29.5.0",
         "jsdoc": "^4.0.2",
         "karma": "^6.4.2",
         "karma-chrome-launcher": "^3.2.0",
