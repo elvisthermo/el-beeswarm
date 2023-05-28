@@ -1,6 +1,6 @@
 {
     "name": "el-beeswarm",
-    "version": "0.3.5",
+    "version": "0.3.6-rc",
     "description": "",
     "main": "./dist/cjs/el_beeswarm.min.js",
     "module": "./dist/esm/el_beeswarm.min.js",
@@ -40,10 +40,7 @@
         "@babel/preset-react": "^7.12.13",
         "babel-loader": "^8.2.2",
         "d3": "^7.8.4",
-        "html-webpack-plugin": "^5.2.0",
-        "jest-sonar": "^0.2.16",
-        "sonar-scanner": "^3.1.0",
-        "sonarqube-scanner": "^3.0.1"
+        "html-webpack-plugin": "^5.2.0"
     },
     "devDependencies": {
         "@babel/core": "^7.22.1",
@@ -71,6 +68,9 @@
         "typescript": "^5.0.4",
         "webpack": "^5.82.1",
         "webpack-cli": "^5.1.1",
-        "webpack-dev-server": "^4.15.0"
+        "webpack-dev-server": "^4.15.0",
+        "jest-sonar": "^0.2.16",
+        "sonar-scanner": "^3.1.0",
+        "sonarqube-scanner": "^3.0.1"
     }
 }

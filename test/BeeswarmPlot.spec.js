@@ -1,44 +1,6 @@
 import BeeswarmPlot from '../src/BeeswarmPlot';
-const dataJson = {
-  dataset_name: 'Iris',
-  samples: [
-    {
-      sepal_length: 5.1,
-      sepal_width: 3.5,
-      petal_length: 1.4,
-      petal_width: 0.2,
-      species: 'setosa',
-    },
-    {
-      sepal_length: 4.9,
-      sepal_width: 3.0,
-      petal_length: 1.4,
-      petal_width: 0.2,
-      species: 'setosa',
-    },
-    {
-      sepal_length: 4.7,
-      sepal_width: 3.2,
-      petal_length: 1.3,
-      petal_width: 0.2,
-      species: 'setosa',
-    },
-    {
-      sepal_length: 4.6,
-      sepal_width: 3.1,
-      petal_length: 1.5,
-      petal_width: 0.2,
-      species: 'setosa',
-    },
-    {
-      sepal_length: 5.0,
-      sepal_width: 3.6,
-      petal_length: 1.4,
-      petal_width: 0.2,
-      species: 'setosa',
-    },
-  ],
-};
+import { dataJson } from './jest/__mocks__/datasetMock';
+
 describe(`${BeeswarmPlot.name}`, () => {
   beforeEach(() => {
     // Set up DOM
@@ -46,6 +8,8 @@ describe(`${BeeswarmPlot.name}`, () => {
           <div id="element"></div>
         `;
   });
+
+  afterEach(() => {});
 
   it('should initialize with correct values', () => {
     const htmlElementId = 'element';

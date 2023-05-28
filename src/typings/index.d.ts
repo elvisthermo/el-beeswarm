@@ -22,8 +22,6 @@ declare module "el-beeswarm" {
       xLabel: string,
       yLabel: string,
       radius: number,
-      width: number,
-      height: number,
       settings: Settings
     );
     prepareData(): void;
@@ -75,8 +73,6 @@ declare module "el-beeswarm" {
       data: any[],
       attr: string,
       radius: number,
-      width: number,
-      height: number,
       settings: any
     );
     prepareData(): void;
@@ -97,19 +93,21 @@ declare module "el-beeswarm" {
   }
   
   export interface Settings {
-    dotsType: "circle" | "hex";
+    width: number,
+    height: number;
+    dotsType?: "circle" | "hex";
     colorAttr?: string;
-    colors?: any[] | undefined;
-    autoresize: boolean;
-    opacity: number;
-    highlightColor: string;
-    forceSteps: number;
-    forceX: number;
-    forceY: number;
-    theme?: any;
-    forceCollider: number;
-    showTooltip: boolean;
-    showLegend: boolean;
+    colors?: string[];
+    autoresize?: boolean;
+    opacity?: number;
+    highlightColor?: string;
+    forceSteps?: number;
+    forceX?: number;
+    forceY?: number;
+    theme?: string;
+    forceCollider?: number;
+    showTooltip?: boolean;
+    showLegend?: boolean;
     orientation?: "x" | "y";
   }
   

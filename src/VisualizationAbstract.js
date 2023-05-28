@@ -16,14 +16,10 @@ export default class VisualizationAbstract {
       size_type: 'fit', //"absolute"
       width: 700,
       height: 300,
-      paddingTop: 25,
-      paddingLeft: 50,
-      paddingRight: 50,
-      paddingBottom: 30,
       autoresize: true,
       colorAttr: '',
       interpolate: settings.interpolate ?? d3.interpolateBlues,
-      theme: settings.theme, //light or dark
+      theme: settings.theme, //light,// dark
       showLegend: settings.showLegend ?? false,
       colors: ['#FF1122'],
     };

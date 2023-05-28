@@ -1,0 +1,45 @@
+export const dataJson = {
+  dataset_name: 'Iris',
+  samples: [
+    {
+      sepal_length: 5.1,
+      sepal_width: 3.5,
+      petal_length: 1.4,
+      petal_width: 0.2,
+      species: 'setosa',
+      date: new Date(2023, 4, 28, 14, 30, 0, 0),
+    },
+    {
+      sepal_length: 4.9,
+      sepal_width: 3.0,
+      petal_length: 1.4,
+      petal_width: 0.2,
+      species: 'setosa',
+      date: new Date(2023, 5, 28, 14, 30, 0, 0),
+    },
+    {
+      sepal_length: 4.7,
+      sepal_width: 3.2,
+      petal_length: 1.3,
+      petal_width: 0.2,
+      species: 'setosa',
+      date: new Date(2023, 6, 28, 14, 30, 0, 0),
+    },
+    {
+      sepal_length: 4.6,
+      sepal_width: 3.1,
+      petal_length: 1.5,
+      petal_width: 0.2,
+      species: 'setosa',
+      date: new Date(2023, 7, 28, 14, 30, 0, 0),
+    },
+    {
+      sepal_length: 5.0,
+      sepal_width: 3.6,
+      petal_length: 1.4,
+      petal_width: 0.2,
+      species: 'setosa',
+      date: new Date(2023, 8, 28, 14, 30, 0, 0),
+    },
+  ],
+};
