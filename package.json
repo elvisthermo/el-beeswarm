@@ -1,6 +1,6 @@
 {
     "name": "el-beeswarm",
-    "version": "0.3.5",
+    "version": "0.3.6-Beta",
     "description": "",
     "main": "./dist/cjs/el_beeswarm.min.js",
     "module": "./dist/esm/el_beeswarm.min.js",
