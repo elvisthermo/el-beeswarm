@@ -1,5 +1,7 @@
 import * as d3 from 'd3';
 import './styles/main.css';
+import { v4 as uuidv4 } from 'uuid';
+
 export default class VisualizationAbstract {
   /**
    *
@@ -8,6 +10,8 @@ export default class VisualizationAbstract {
   constructor(htmlElementId, width, height, settings = {}) {
     this.parentElement = document.getElementById(htmlElementId);
     this.htmlBounds = this.parentElement.getBoundingClientRect();
+    this.title = settings.title ?? '';
+    this.uuid = uuidv4();
     this.settings = {
       color: settings.color ?? '#069', //"grey",//"#069",
       highlightColor: settings.highlightColor ?? 'red',
@@ -46,11 +50,26 @@ export default class VisualizationAbstract {
       right: 0,
     };
 
+    this.container = d3
+      .select(this.parentElement)
+      .attr('class', `main-container ${this.settings.theme}-theme `)
+      .style('width', 'fit-content');
+
+    this.divTitle = this.container.append('div').attr('class', 'plot-title');
+
+    this.legendDiv = this.container.append('div').attr('class', 'plot-legend');
+
+    if (this.title && this.title.length !== '') {
+      this.divTitle
+        .attr('class', `plot-title ${this.settings.theme}-theme `)
+        .text(this.title);
+    }
+
     this.svg = d3
       .select(this.parentElement)
       .attr('class', `${this.settings.theme}-theme plot`)
       .append('svg')
-      .attr('class', `${this.settings.theme}-theme view-container`)
+      .attr('class', `${this.settings.theme}-theme`)
       .attr('width', this.config.width)
       .attr('height', this.config.height);
 
@@ -128,33 +147,9 @@ export default class VisualizationAbstract {
   }
 
   drawLegend(colors, categories) {
-    const legendDiv = d3
-      .select(this.parentElement)
-      .insert('div')
-      .attr('class', `legend-container ${this.settings.theme}-theme`);
-
-    legendDiv
-      .append('div')
-      .attr('class', 'legend-header')
-      .append('button')
-      .attr('class', 'close-btn')
-      .text('➖')
-      .on('click', function () {
-        const legend = d3.select(d3.select(this).node().parentNode.parentNode);
-        const icon = d3.select(this);
-        if (legend.select('ul').classed('collapsed')) {
-          // Expandir a div de legendas
-          legend.select('ul').classed('collapsed', false);
-          icon.text('➖');
-        } else {
-          // Encolher a div de legendas
-          legend.select('ul').classed('collapsed', true);
-          icon.text('➕');
-        }
-      });
-
+    const legendDiv = this.legendDiv;
     if (categories.length > 0) {
-      this.drawLegendCategorical(legendDiv, colors, categories);
+      this.drawLegendCategorical(colors, categories);
     } else {
       const min = d3.min(this.data, (d) => {
         return d[this.settings.colorAttr];
@@ -178,7 +173,11 @@ export default class VisualizationAbstract {
     const colors = this.settings.colors;
 
     const container = legendDiv;
-    const togleContainer = container.append('ul').attr('class', 'legend-ul');
+    const togleContainer = container
+      .append('ul')
+      .attr('class', 'legend-ul')
+      .style('justify-content', 'space-evenly');
+
     const svg = togleContainer
       .append('svg')
       .attr('width', 200)
@@ -191,7 +190,7 @@ export default class VisualizationAbstract {
 
     const gradient = defs
       .append('linearGradient')
-      .attr('id', 'gradient')
+      .attr('id', `gradient-${this.uuid}`)
       .attr('x1', '0%')
       .attr('y1', '0%')
       .attr('x2', '100%')
@@ -235,7 +234,7 @@ export default class VisualizationAbstract {
       .attr('height', 20)
       .attr('x', 40)
       .attr('y', 0)
-      .attr('fill', 'url(#gradient)');
+      .attr('fill', `url(#gradient-${this.uuid})`);
 
     const minValueText = svg
       .append('text')
@@ -256,24 +255,36 @@ export default class VisualizationAbstract {
       .style('dominant-baseline', 'central');
   }
 
-  drawLegendCategorical(legendDiv, colors, categories) {
-    const legendItems = legendDiv
+  drawLegendCategorical(colors, categories) {
+    const colorScale = d3.scaleOrdinal(colors);
+    const legendItems = this.legendDiv
       .append('ul')
       .attr('class', 'legend-ul')
+      .style('display', 'flex')
+      .style('justify-content', 'space-around')
+      .style('flex-wrap', 'wrap')
+      .style('width', this.settings.width + 'px')
       .selectAll('li')
+      .style('margin', '0.5rem')
       .data(categories)
       .enter()
-      .append('li');
+      .append('div')
+      .style('display', 'flex')
+      .style('margin', '0.5rem');
 
     legendItems
       .append('div')
+      .attr('name', (d) => d)
       .style('width', '20px')
       .style('height', '20px')
-      .style('border-radius', '50%')
-      .style('background-color', (d, i) => colors(d));
+      .style('border-radius', '0.2rem')
+      .style('margin-right', '0.5rem')
+      .style('background-color', (d, i) => colorScale(d));
 
     legendItems
-      .append('div')
+      .append('label')
+      .attr('for', (d) => d)
+
       .attr('class', 'legend-text')
       .text((d) => d);
   }
@@ -418,6 +429,10 @@ export default class VisualizationAbstract {
       )
       .attr('title', (d) => this.generateTooltipHtml(d, this.attrTooltip))
       .attr('cursor', 'pointer');
+  }
+
+  addTitle(text) {
+    this.title = text;
   }
 
   drawCircles(element, positionedData, colors) {

@@ -90,14 +90,15 @@ export default class BeeswarmGroup extends VisualizationAbstract {
   }
 
   drawDots(x, y) {
-    const colorScheme = this.settings.colors ?? undefined;
+    const colorScheme = this.settings.colors ?? d3.schemeCategory10;
     const { colors, categories } = this.setColor(
       this.settings.colorAttr,
       colorScheme,
       this.settings.interpolate,
     );
-    if (this.settings.showLegend && this.settings.colors) {
-      this.drawLegend(colors, categories);
+
+    if (this.settings.showLegend) {
+      this.drawLegend(colorScheme, categories);
     }
 
     const positionedData = this.calculateSwarmPlotPositions(

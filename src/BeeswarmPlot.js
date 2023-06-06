@@ -23,6 +23,7 @@ export default class BeeswarmPlot extends VisualizationAbstract {
     this.settings.forceY = settings.forceY ?? 5;
     this.settings.forceCollider = settings.forceCollider ?? 1;
     this.attrTooltip = [];
+    this.settings.showLegend = settings.showLegend ?? false;
   }
 
   prepareData() {
@@ -97,7 +98,7 @@ export default class BeeswarmPlot extends VisualizationAbstract {
       colorScheme,
       this.settings.interpolate,
     );
-    if (this.settings.showLegend && this.settings.colors) {
+    if (this.settings.showLegend) {
       this.drawLegend(colors, categories);
     }
 

@@ -1,60 +1,39 @@
-
-/* Estilo padrão */
-/* :root {
-  --bg-color: #ffffff;
-  --font-family: 'Roboto', sans-serif;
-  --font-color: #333333;
-  --axis-color: #666666;
-  --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --card-bg-color: #fcfcfc;
-  --card-border-color: #e0e0e0;
-} */
-
-/* Estilo dark mode */
-/* [data-theme="dark"] {
-  --bg-color: #222222;
-  --font-color: #cccccc;
-  --axis-color: #999999;
-  --card-bg-color: #2e2e2e;
-  --card-border-color: #3e3e3e;
-  --item-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
-} */
-
-/* Estilo light mode */
-/* [data-theme="light"] {
-  --bg-color: #ffffff;
-  --font-color: #333333;
-  --axis-color: #666666;
-  --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --card-bg-color: #f0f0f0;
-  --card-border-color: #e0e0e0;
-} */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap');
 
 .light-theme {
   --bg-color: #fefefe;
-  --font-color: #0b0b0b;
+  --font-color: #1C1E21;
   --axis-color: #666666;
-  --color:#0b0b0b;
+  --color: #1C1E21;
   --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   --card-bg-color: #fefefe;
   --card-border-color: #e0e0e0;
-}
+  font-family: 'Open Sans', sans-serif;}
 
 .dark-theme {
-  --bg-color: #222222;
-  --font-color: #cccccc;
+  --bg-color: #242526;
+  --font-color: #E3E3E3;
   --axis-color: #999999;
-  --card-bg-color: #1c1721;
+  --card-bg-color:#1B1B1D;
   --card-border-color: #3e3e3e;
   --item-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
-}
+  font-family: 'Open Sans', sans-serif;}
 
-.layer-axisX{
+.layer-axisX > text {
   color: var(--font-color);
+  font-family: 'Open Sans', sans-serif;  
+
+}
+text{
+  color: var(--font-color);
+  font-family: 'Open Sans', sans-serif;  
+  font-size: 1rem;
 }
 
-.layer-axisY{
-  color:var(--font-color);
+.layer-axisY > text {
+  color: var(--font-color);
+  font-family: 'Open Sans', sans-serif;  
+
 }
 
 .plot {
@@ -64,11 +43,13 @@
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, border-color 0.3s ease;
+  color: var(--font-color);
 }
 
-.view-container {
+.view-container .main-container .plot-title .plot-legend {
   background-color: var(--card-bg-color);
   border: 1px solid var(--card-border-color);
+  color: var(--font-color);
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -103,23 +84,24 @@
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-div.legend-container{
+div.legend-container {
   border: 1px solid var(--card-border-color);
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 20%;
   height: auto;
-  background-color: var(--card-bg-color); 
+  background-color: var(--card-bg-color);
   margin: 5px;
   padding: 5px;
-  border-radius: 10px; 
+  border-radius: 10px;
   color: var(--font-color);
 }
 
-ul.legend-ul{
+ul.legend-ul {
   max-height: 180px;
   overflow: auto;
+  margin: 0.5rem;
 }
 
 ul.legend-ul::-webkit-scrollbar {
@@ -139,20 +121,20 @@ ul.legend-ul::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
 
-ul.legend-ul > li{
-  display: flex; 
+ul.legend-ul > li {
+  display: flex;
   margin: 2px 0px 0px 5px;
 }
 
-ul.legend-ul > li>div{
-  display: flex; 
+ul.legend-ul > li > div {
+  display: flex;
   margin: 0px 10px 0px 0px;
 }
 .legend-header {
   display: flex;
   justify-content: flex-end;
 }
-.legend-header > .close-btn{
+.legend-header > .close-btn {
   cursor: pointer;
   border: none;
   background: none;
@@ -167,11 +149,27 @@ ul.legend-ul > li>div{
   transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
 }
 
-path.domain{
+path.domain {
   opacity: 0.1;
-
 }
 
 .tick > line {
   opacity: 0.1;
+}
+
+.plot-title {
+  display: flex;
+  justify-content: center;
+  font-weight: bolder;
+  color: var(--font-color);
+
+}
+.plot-legend {
+  display: flex;
+  justify-content: center;
+  color: var(--font-color);
+
+}
+
+svg.layer-backgound{
 }
