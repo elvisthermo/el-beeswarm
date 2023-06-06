@@ -25,14 +25,15 @@
 
 El-beeswarm é uma biblioteca    JavaScript projetada para criar facilmente gráficos de enxame (beeswarm plots). Estes gráficos são ideais para visualizar distribuições de dados e relações entre variáveis. Esta biblioteca é leve, fácil de usar e altamente personalizável.
 
-## Instalação
+## [Instalação](http://localhost:3000/docs/documentation/get-started/installation)
 
 Para instalar o el-beeswarm, você pode usar o npm:
 
 ```bash
 npm install el-beeswarm
 ```
-el-beeswarm
+
+## [Como usar](https://el-beeswarm-docs.vercel.app/docs/documentation/get-started/how-to-use)
 
 ## Contribuições
 
