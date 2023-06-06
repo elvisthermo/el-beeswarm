@@ -11,18 +11,18 @@ module.exports = (env, argv) => {
       rules: [
         {
           test: /\.css$/,
-          use: ['style-loader', 'css-loader']
+          use: ['style-loader', 'css-loader'],
         },
         {
           test: /\.js$/,
           loader: 'babel-loader',
-          exclude: /node_modules/
-        }
-      ]
+          exclude: /node_modules/,
+        },
+      ],
     },
     optimization: {
-      minimize: true
-    }
+      minimize: true,
+    },
   };
 
   const cjsConfig = {
@@ -32,8 +32,8 @@ module.exports = (env, argv) => {
       path: path.resolve(__dirname, 'dist', 'cjs'),
       filename: 'el_beeswarm.min.js',
       library: 'vis',
-      libraryTarget: 'umd'
-    }
+      libraryTarget: 'umd',
+    },
   };
 
   const esmConfig = {
@@ -42,11 +42,11 @@ module.exports = (env, argv) => {
     output: {
       path: path.resolve(__dirname, 'dist', 'esm'),
       filename: 'el_beeswarm.min.js',
-      libraryTarget: 'module'
+      libraryTarget: 'module',
     },
     experiments: {
-      outputModule: true
-    }
+      outputModule: true,
+    },
   };
 
   return [cjsConfig, esmConfig];
