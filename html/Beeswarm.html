@@ -38,7 +38,7 @@
         async function main() {
           dataset = await loadDataSet();
 
-          const colors = [
+  const colors = [
   "blue",
   "green",
   "red",
@@ -83,7 +83,7 @@
             attr[7],
             5,
             (this.settings = {
-              title: "Beeswarm Basico y",
+              title: "Beeswarm Basico Y",
               color: "#069", //"grey",//"#069",
               highlightColor: "#FF1122", //"#08E700",
               opacity: 1,
@@ -98,6 +98,7 @@
               interpolate: d3.interpolateGreens,
               showLegend: true,
               margin:{top: 30, right: 10, bottom: 60, left: 60 },
+              dotsType: 'hex',
               // colors:['red','blue','pink',"green"]
             })
           );
@@ -113,7 +114,7 @@
             attr[7],
             5,
             (this.settings = {
-              title: "Beeswarm Basico x",
+              title: "Beeswarm Basico X",
               color: "#069", //"grey",//"#069",
               highlightColor: "#FF1122", //"#08E700",
               opacity: 1,
@@ -132,6 +133,8 @@
               orientation: 'x',
               showLegend: true,
               interpolate: d3.interpolateMagma,
+              dotsType: 'hex',
+
               // colors:['red','blue','pink',"green"]
             })
           );
@@ -217,14 +220,14 @@
               opacity: 1,
               notSelectedOpacity: 0.15,
               size_type: "fit", //"absolute"
-              width: 900,
-              height: 600,
+              width: 1800,
+              height: 800,
               paddingTop: 25,
               paddingLeft: 50,
               paddingRight: 50,
               paddingBottom: 30,
               autoresize: true,
-              margin:{top: 10, right: 10, bottom: 60, left: 60 },
+              margin:{top: 30, right: 10, bottom: 60, left: 60 },
               colorAttr: attr[0],
               theme: "light",
               dotsType: 'circle',

@@ -1,59 +1,39 @@
-/* Estilo padrão */
-/* :root {
-  --bg-color: #ffffff;
-  --font-family: 'Roboto', sans-serif;
-  --font-color: #333333;
-  --axis-color: #666666;
-  --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --card-bg-color: #fcfcfc;
-  --card-border-color: #e0e0e0;
-} */
-
-/* Estilo dark mode */
-/* [data-theme="dark"] {
-  --bg-color: #222222;
-  --font-color: #cccccc;
-  --axis-color: #999999;
-  --card-bg-color: #2e2e2e;
-  --card-border-color: #3e3e3e;
-  --item-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
-} */
-
-/* Estilo light mode */
-/* [data-theme="light"] {
-  --bg-color: #ffffff;
-  --font-color: #333333;
-  --axis-color: #666666;
-  --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --card-bg-color: #f0f0f0;
-  --card-border-color: #e0e0e0;
-} */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap');
 
 .light-theme {
   --bg-color: #fefefe;
-  --font-color: #0b0b0b;
+  --font-color: #1C1E21;
   --axis-color: #666666;
-  --color: #0b0b0b;
+  --color: #1C1E21;
   --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   --card-bg-color: #fefefe;
   --card-border-color: #e0e0e0;
-}
+  font-family: 'Open Sans', sans-serif;}
 
 .dark-theme {
-  --bg-color: #222222;
-  --font-color: #cccccc;
+  --bg-color: #242526;
+  --font-color: #E3E3E3;
   --axis-color: #999999;
-  --card-bg-color: #1c1721;
+  --card-bg-color:#1B1B1D;
   --card-border-color: #3e3e3e;
   --item-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
+  font-family: 'Open Sans', sans-serif;}
+
+.layer-axisX > text {
+  color: var(--font-color);
+  font-family: 'Open Sans', sans-serif;  
+
+}
+text{
+  color: var(--font-color);
+  font-family: 'Open Sans', sans-serif;  
+  font-size: 1rem;
 }
 
-.layer-axisX {
+.layer-axisY > text {
   color: var(--font-color);
-}
+  font-family: 'Open Sans', sans-serif;  
 
-.layer-axisY {
-  color: var(--font-color);
 }
 
 .plot {
@@ -189,4 +169,7 @@ path.domain {
   justify-content: center;
   color: var(--font-color);
 
+}
+
+svg.layer-backgound{
 }
