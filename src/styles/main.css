@@ -173,3 +173,12 @@ path.domain {
 
 svg.layer-backgound{
 }
+
+.tooltip {
+  position: absolute;
+  display: none;
+  background: rgb(237, 237, 237) !important;
+  padding: 10px !important;
+  border-radius: 0.5rem !important;
+  color: #000 !important;
+}
