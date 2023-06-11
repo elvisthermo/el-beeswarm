@@ -341,6 +341,7 @@ export default class VisualizationAbstract {
     this.tooltip
       .transition()
       .style('display', 'block')
+      .style('position', 'absolute')
       .transition(1000)
       .style('opacity', 0.9);
     this.tooltip
