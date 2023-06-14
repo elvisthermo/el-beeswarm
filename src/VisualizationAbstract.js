@@ -2,16 +2,65 @@ import * as d3 from 'd3';
 import './styles/main.css';
 import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * @typedef {Object} VisualizationSettings
+ * @property {string} title - The title of the visualization.
+ * @property {string} color - The default color for the visualization.
+ * @property {string} highlightColor - The color used to highlight elements.
+ * @property {number} opacity - The opacity of the visualization elements.
+ * @property {number} notSelectedOpacity - The opacity of not selected elements.
+ * @property {string} size_type - The type of sizing for the visualization elements.
+ * @property {number} width - The width of the visualization.
+ * @property {number} height - The height of the visualization.
+ * @property {number} paddingTop - The top padding of the visualization.
+ * @property {number} paddingLeft - The left padding of the visualization.
+ * @property {number} paddingRight - The right padding of the visualization.
+ * @property {number} paddingBottom - The bottom padding of the visualization.
+ * @property {boolean} autoresize - Whether the visualization should automatically resize.
+ * @property {string} colorAttr - The attribute used for coloring elements.
+ * @property {Function} interpolate - The interpolation function for color scales.
+ * @property {string} theme - The theme of the visualization (light or dark).
+ * @property {boolean} showLegend - Whether to display the legend.
+ * @property {string[]} colors - An array of custom colors for the visualization.
+ */
+
+/**
+ * Class representing a visualization.
+ */
 export default class VisualizationAbstract {
   /**
-   *
-   * @param {htmlElementId} htmlElementId - id do Elemnto html em objeto
+   * Create a visualization.
+   * @param {string} htmlElementId - The ID of the HTML element to attach the visualization to.
+   * @param {number} width - The width of the visualization.
+   * @param {number} height - The height of the visualization.
+   * @param {VisualizationSettings} settings - The settings for the visualization.
    */
   constructor(htmlElementId, width, height, settings = {}) {
+    /**
+     * The parent element of the visualization.
+     * @type {HTMLElement}
+     */
     this.parentElement = document.getElementById(htmlElementId);
+    /**
+     * The bounds of the HTML element.
+     * @type {DOMRect}
+     */
     this.htmlBounds = this.parentElement.getBoundingClientRect();
+    /**
+     * The title of the visualization.
+     * @type {string}
+     */
     this.title = settings.title ?? '';
+
+    /**
+     * The UUID of the visualization.
+     * @type {string}
+     */
     this.uuid = uuidv4();
+    /**
+     * The settings for the visualization.
+     * @type {VisualizationSettings}
+     */
     this.settings = {
       color: settings.color ?? '#069', //"grey",//"#069",
       highlightColor: settings.highlightColor ?? 'red',
@@ -31,6 +80,10 @@ export default class VisualizationAbstract {
       showLegend: settings.showLegend ?? false,
       colors: ['#FF1122'],
     };
+    /**
+     * The timeout for hiding the tooltip.
+     * @type {number|undefined}
+     */
     this.hideTooltipTimeout = undefined;
 
     // converter width "100%"" e height "100vh" em numerico
@@ -40,9 +93,28 @@ export default class VisualizationAbstract {
       color: '#23a88e',
     };
 
+    /**
+     * The attributes to display tooltips for.
+     * @type {string[]}
+     */
     this.attrTooltip = [];
+
+    /**
+     * The selected elements in the visualization.
+     * @type {Object[]}
+     */
     this.selected = [];
+
+    /**
+     * The margin of the visualization.
+     * @type {Object}
+     */
     this.margin = settings.margin;
+
+    /**
+     * The padding of the visualization.
+     * @type {Object}
+     */
     this.padding = {
       top: 0,
       left: 0,
@@ -50,13 +122,25 @@ export default class VisualizationAbstract {
       right: 0,
     };
 
+    /**
+     * The container element for the visualization.
+     * @type {d3.Selection}
+     */
     this.container = d3
       .select(this.parentElement)
       .attr('class', `main-container ${this.settings.theme}-theme `)
       .style('width', 'fit-content');
 
+    /**
+     * The title element for the visualization.
+     * @type {d3.Selection}
+     */
     this.divTitle = this.container.append('div').attr('class', 'plot-title');
 
+    /**
+     * The legend element for the visualization.
+     * @type {d3.Selection}
+     */
     this.legendDiv = this.container.append('div').attr('class', 'plot-legend');
 
     if (this.title && this.title.length !== '') {
@@ -65,6 +149,10 @@ export default class VisualizationAbstract {
         .text(this.title);
     }
 
+    /**
+     * The SVG element for the visualization.
+     * @type {d3.Selection}
+     */
     this.svg = d3
       .select(this.parentElement)
       .attr('class', `${this.settings.theme}-theme plot`)
@@ -73,16 +161,40 @@ export default class VisualizationAbstract {
       .attr('width', this.config.width)
       .attr('height', this.config.height);
 
+    /**
+     * The background layer for the visualization.
+     * @type {d3.Selection}
+     */
     this.background = this.svg.append('g').attr('class', 'layer-backgound');
 
+    /**
+     * The X-axis layer for the visualization.
+     * @type {d3.Selection}
+     */
     this.axisX = this.background.append('g').attr('class', 'layer-axisX');
 
+    /**
+     * The Y-axis layer for the visualization.
+     * @type {d3.Selection}
+     */
     this.axisY = this.background.append('g').attr('class', 'layer-axisY');
 
+    /**
+     * The forenground layer for the visualization.
+     * @type {d3.Selection}
+     */
     this.forenground = this.svg.append('g').attr('class', 'layer-forenground');
 
+    /**
+     * The highlight layer for the visualization.
+     * @type {d3.Selection}
+     */
     this.highlight = this.svg.append('g').attr('class', 'layer-highlight');
 
+    /**
+     * The tooltip element for the visualization.
+     * @type {d3.Selection}
+     */
     this.tooltip = d3
       .select('body')
       .append('div')
@@ -436,6 +548,13 @@ export default class VisualizationAbstract {
     this.title = text;
   }
 
+  /**
+   * Draws circles on the specified element based on the provided positioned data and colors.
+   * @param {d3.Selection} element - The element to draw the circles on.
+   * @param {Object[]} positionedData - The data with x and y positions for each circle.
+   * @param {string[]|undefined} colors - The colors for the circles.
+   * @returns {d3.Selection} - The selection of the drawn circles.
+   */
   drawCircles(element, positionedData, colors) {
     return element
       .selectAll('.dot')

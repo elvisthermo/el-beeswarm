@@ -2,6 +2,15 @@ import * as d3 from 'd3';
 import VisualizationAbstract from './VisualizationAbstract.js';
 
 export default class BeeswarmGroup extends VisualizationAbstract {
+  /**
+   * Cria uma nova instância de ScatterPlot.
+   * @param {string} htmlElementId - O ID do elemento HTML no qual o gráfico será renderizado.
+   * @param {Array} data - Os dados a serem exibidos no gráfico.
+   * @param {string} xLabel - O rótulo do eixo x.
+   * @param {string} yLabel - O rótulo do eixo y.
+   * @param {number} radius - O raio dos pontos do gráfico. O valor padrão é 5.
+   * @param {Object} settings - Configurações opcionais para o gráfico.
+   */
   constructor(htmlElementId, data, xLabel, yLabel, radius, settings) {
     super(htmlElementId, settings.width, settings.height, settings);
     this.margin = settings.margin;
@@ -81,6 +90,9 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     return { x, y };
   }
 
+  /**
+   * Renderiza o gráfico Beeswarmplot.
+   */
   draw() {
     super.draw();
     const { x, y } = this.prepareData();
@@ -165,6 +177,14 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     };
   }
 
+  /**
+   * Calcula as posições dos pontos no gráfico SwarmPlot.
+   * @param {Array} data - Os dados a serem posicionados.
+   * @param {Object} xScale - A escala utilizada para o eixo x.
+   * @param {Object} yScale - A escala utilizada para o eixo y.
+   * @param {number} radius - O raio dos pontos.
+   * @returns {Array} - Os dados com as posições calculadas.
+   */
   calculateSwarmPlotPositions(data, xScale, yScale, radius) {
     const positionedData = data.map((d) => ({ ...d }));
     const sortedData = positionedData.sort(
@@ -199,6 +219,9 @@ export default class BeeswarmGroup extends VisualizationAbstract {
     return sortedData;
   }
 
+  /**
+   * Desenha o contêiner do gráfico.
+   */
   drawContainer() {
     this.forenground = this.forenground
       .append('g')
