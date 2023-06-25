@@ -23,7 +23,9 @@
         "sonar": "node sonar-project.js",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "doc": "jsdoc -c jsdoc.json",
+        "docs": "doxdox --renderer markdown --output DOCUMENTATION.md"
     },
     "repository": {
         "type": "git",
@@ -42,12 +44,13 @@
         "uuid": "^9.0.0"
     },
     "devDependencies": {
-        "@babel/preset-react": "^7.12.13",
-        "babel-loader": "^8.2.2",
         "@babel/core": "^7.22.1",
         "@babel/preset-env": "^7.22.2",
+        "@babel/preset-react": "^7.12.13",
         "babel-jest": "^29.5.0",
+        "babel-loader": "^8.2.2",
         "css-loader": "^6.7.3",
+        "doxdox": "^4.0.0-preview.19",
         "eslint": "^8.41.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-plugin-prettier": "^4.2.1",
