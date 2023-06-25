@@ -23,21 +23,23 @@
 ![D3](https://badgen.net/badge/d3/v7.8.4/pink)
 ![license](https://badgen.net/npm/license/el-beeswarm)
 
-El-beeswarm é uma biblioteca    JavaScript projetada para criar facilmente gráficos de enxame (beeswarm plots). Estes gráficos são ideais para visualizar distribuições de dados e relações entre variáveis. Esta biblioteca é leve, fácil de usar e altamente personalizável.
+El-beeswarm is a JavaScript library designed to easily create beeswarm plots. These charts are ideal for visualizing data distributions and relationships between variables. This library is lightweight, easy to use and highly customizable.
 
 ## [Instalação](http://localhost:3000/docs/documentation/get-started/installation)
 
-Para instalar o el-beeswarm, você pode usar o npm:
+To install el-beeswarm you can use npm:
 
 ```bash
 npm install el-beeswarm
 ```
 
-## [Como usar](https://el-beeswarm-docs.vercel.app/docs/documentation/get-started/how-to-use)
+## [How to use](https://el-beeswarm-docs.vercel.app/docs/documentation/get-started/how-to-use)
 
-## Contribuições
 
-Contribuições são muito bem-vindas! Se você encontrou um bug ou tem uma ideia para uma nova funcionalidade, sinta-se à vontade para abrir uma issue ou pull request.
+## [Samples](https://el-beeswarm-docs.vercel.app/docs/samples/samples)
+
+## Contributions
+Contributions are most welcome! If you found a bug or have an idea for a new feature, feel free to open an issue or pull request.
 
 ## License
 
